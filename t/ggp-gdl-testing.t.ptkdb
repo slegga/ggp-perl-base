@@ -1,0 +1,16 @@
+{
+  '_<t/ggp-gdl-testing.t' => [
+    {
+      'fname' => 't/ggp-gdl-testing.t',
+      'type' => 'user',
+      'text' => 'my $world = parse_gdl($textrules);
+',
+      'value' => '1',
+      'expr' => undef,
+      'line' => '28'
+    }
+  ]
+};
+[];
+undef;
+'954x1018+960+0';

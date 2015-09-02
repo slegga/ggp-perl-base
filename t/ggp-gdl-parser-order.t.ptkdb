@@ -1,0 +1,48 @@
+$files = {
+           '_<t/ggp-gdl-parser-order.t' => [
+                                             {
+                                               'value' => '1',
+                                               'text' => '    get_check_parser_order( $file );
+',
+                                               'line' => '70',
+                                               'type' => 'user',
+                                               'fname' => 't/ggp-gdl-parser-order.t',
+                                               'expr' => undef
+                                             }
+                                           ],
+           '_</home/t527081/lib/SH/GGP/Tools/Parser.pm' => [
+                                                             {
+                                                               'expr' => undef,
+                                                               'type' => 'user',
+                                                               'fname' => '/home/t527081/lib/SH/GGP/Tools/Parser.pm',
+                                                               'line' => '360',
+                                                               'value' => '1',
+                                                               'text' => '        for my $line (@lines) {
+'
+                                                             }
+                                                           ]
+         };
+$expr_list = [
+               {
+                 'depth' => -1,
+                 'expr' => '$line'
+               },
+               {
+                 'expr' => '$return',
+                 'depth' => -1
+               },
+               {
+                 'expr' => '$known',
+                 'depth' => -1
+               },
+               {
+                 'expr' => '@new',
+                 'depth' => -1
+               },
+               {
+                 'expr' => '$file',
+                 'depth' => -1
+               }
+             ];
+$eval_saved_text = undef;
+$main_win_geometry = '956x1021+0+0';
