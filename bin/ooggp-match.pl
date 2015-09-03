@@ -25,15 +25,16 @@ my $homedir;
 my $gdescfile = 'tictactoe0';
 my @movehist;
 
+use Cwd 'abs_path';
 BEGIN {
-    if ( $^O eq 'MSWin32' ) {
-        $homedir = 'c:\privat';
-    }
-    else {
-        $homedir = $ENV{HOME};
+    $homedir = abs_path($0);
+    if ($^O eq 'MSWin32') {
+        $homedir =~s|\[^\]+\[^\]+$||;
+    } else {
+        $homedir =~s|/[^/]+/[^/]+$||;
     }
 }
-use lib "$homedir/git/ggp-perl-base/lib";
+use lib "$homedir/lib";
 use SH::OOGGP::Tools::Match qw ( run_match list_rules list_agents);
 use SH::Script qw( options_and_usage );
 use SH::OOGGP::Tools::Parser qw ( parse_gdl_file);

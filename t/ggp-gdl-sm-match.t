@@ -4,11 +4,13 @@ use warnings;
 use strict;
 my $homedir;
 my $gdescfile = 'tictactoe0.kif';
+use Cwd 'abs_path';
 BEGIN {
+    $homedir = abs_path($0);
     if ($^O eq 'MSWin32') {
-        $homedir = 'c:\privat';
+        $homedir =~s|\[^\]+\[^\]+$||;
     } else {
-        $homedir = $ENV{HOME};
+        $homedir =~s|/[^/]+/[^/]+$||;
     }
 }
 use lib "$homedir/lib";
@@ -44,7 +46,7 @@ sub test_short_match {
     ok($test,'Check for fast endings' );
 }
 
-opendir(my $dh,"$homedir/Dropbox/data/kif") || die "can't opendir $homedir/Dropbox/data/kif: $!";
+opendir(my $dh,"$homedir/share/kif") || die "can't opendir $homedir/share/kif: $!";
 my @rulefiles = readdir( $dh );
 for my $file(@rulefiles) {
     next if $file !~ /\.kif$/;

@@ -6,6 +6,7 @@ use Data::Dumper;
 use Carp;
 use feature 'say';
 use File::Slurp;
+use Cwd 'abs_path';
 use Storable qw(dclone);
 use Test::More;
 use List::MoreUtils qw (none any );
@@ -17,7 +18,8 @@ BEGIN {
     if ($^O eq 'MSWin32') {
         $homedir = 'c:\privat';
     } else {
-        $homedir = $ENV{HOME};
+        $homedir = abs_path($0);
+        $homedir =~s|/[^/]+/[^/]+$||;
     }
 }
 
@@ -30,7 +32,7 @@ use SH::OOGGP::Tools::Parser ();
 
 sub get_check_parser_order {
     my $gdlfilepath = shift;
-    my $text        = read_file("$homedir/Dropbox/data/kif/$gdlfilepath.kif");
+    my $text        = read_file("$homedir/share/kif/$gdlfilepath.kif");
     my @gdllines = SH::OOGGP::Tools::Parser::gdl_concat_lines($text);
     my @gdllines2;
     for my $gdlline (@gdllines) {
@@ -89,7 +91,7 @@ sub get_check_parser_order {
     ok ($test, 'Right order of lines');
 }
 
-opendir(my $dh,"$homedir/Dropbox/data/kif") || die "can't opendir $homedir/Dropbox/data/kif: $!";
+opendir(my $dh,"$homedir/share/kif") || die "can't opendir $homedir/share/kif: $!";
 my @rulefiles = readdir( $dh );
 for my $file(@rulefiles) {
     next if $file !~ /\.kif$/;

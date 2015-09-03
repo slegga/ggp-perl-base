@@ -12,15 +12,16 @@ use SH::OOGGP::Tools::StateMachine;
 use Storable qw(dclone);
 our @EXPORT_OK = qw(parse_gdl_file parse_gdl gdl_to_data readkifraw gdl_pretty);
 my $homedir;
-
+use Cwd 'abs_path';
 BEGIN {
-    if ( $^O eq 'MSWin32' ) {
-        $homedir = 'c:\privat';
+    $homedir = abs_path($0);
+    if ($^O eq 'MSWin32') {
+        $homedir =~s|\[^\]+\[^\]+$||;
     } else {
-        $homedir = $ENV{HOME};
+        $homedir =~s|/[^/]+/[^/]+$||;
     }
 }
-use lib "$homedir/git/ggp-perl-base/lib";
+use lib "$homedir/lib";
 
 use SH::GGP::Tools::Utils qw( data_to_gdl logf hashify);
 
@@ -42,13 +43,6 @@ Contain functions for transform text to a rule data tree.
 
 =cut
 
-BEGIN {
-    if ( $^O eq 'MSWin32' ) {
-        $homedir = 'c:\privat';
-    } else {
-        $homedir = $ENV{HOME};
-    }
-}
 
 =head1 FUNCTIONS
 
@@ -62,7 +56,7 @@ Read file and process.
 sub parse_gdl_file {
     my $gdlfilepath = shift;
     my $opts        = shift;
-    my $text        = read_file("$homedir/Dropbox/data/kif/$gdlfilepath.kif");
+    my $text        = read_file("$homedir/share/kif/$gdlfilepath.kif");
 
     return parse_gdl( $text, $opts );
 }
