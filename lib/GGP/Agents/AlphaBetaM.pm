@@ -1,4 +1,4 @@
-package SH::OOGGP::Agents::AlphaBetaMH;
+package GGP::Agents::AlphaBetaM;
 use strict;
 use warnings;
 use autodie;
@@ -13,23 +13,26 @@ use Scalar::Util qw(looks_like_number);
 
 =head1 NAME
 
-SH::OOGGP::Agents::AlphaBetaMH
+GGP::Agents::AlphaBetaM
 
 =head1 SYNOPSIS
 
- use SH::OOGGP::Agents::AlphaBetaMH;
+ use GGP::Agents::AlphaBetaM;
  use Data::Dumper;
- my $agent = SH::OOGGP::Agents::AlphaBetaMH->new('test');
+ my $agent = GGP::Agents::AlphaBetaM->new('test');
  print DUmper $agent->info();
 
 =head1 DESCRIPTION
 
-M for use of median legal item
-H for heuristics
+Use classic AlphaBeta. Prefer the median legal move.
+I.e choose the center row in connectFour game.
+
+M for use of median item
 
 =head1 METHODS
 
 =cut
+
 
 # Enable warnings within the Parse::RecDescent module.
 my $homedir;
@@ -42,19 +45,20 @@ BEGIN {
     }
 }
 use lib "$homedir/git/ggp-perl-base/lib";
-use SH::OOGGP::Tools::AgentBase;
-use SH::OOGGP::Tools::Parser qw(parse_gdl);
-use SH::GGP::Tools::Utils qw( data_to_gdl );
-use parent 'SH::OOGGP::Tools::AgentBase';
+use GGP::Tools::AgentBase;
+use GGP::Tools::Parser qw(parse_gdl);
+use GGP::Tools::Utils qw( data_to_gdl );
+use parent 'GGP::Tools::AgentBase';
 
 my @roles;
-my $name = 'AlphaBetaMH';
+my $name = 'AlphaBetaM';
 
 =head2 new
 
-Make new agent
+Create new object.
 
 =cut
+
 
 sub new {
     my ($class_name) = @_;
@@ -67,16 +71,16 @@ sub new {
     $self->{'minnoofroles'} = 2;
     $self->{'maxnoofroles'} = 2;
 
-    if ( -f $self->{'log'} ) {
-        unlink $self->{'log'};
-    }
+    #     if (-f $self->{'log'}) {
+    #         unlink $self->{'log'};
+    #     }
     bless( $self, $class_name );
-
 }
+
 
 =head2 info
 
-Return name and status
+return info
 
 =cut
 
@@ -87,7 +91,7 @@ sub info {
 
 =head2 start
 
-Initialize the agent
+Prepare match.
 
 =cut
 
@@ -99,13 +103,12 @@ sub start {
     $self->{'game'}    = $world->{rules};
     $self->{'role'}    = $player;
     $self->{'roles'}   = $world->{facts}->{role};
-    $self->{'roleid'}  = first_index { $player eq $_ } @{ $self->{'roles'} };    #(0,1,2 etc)
     $self->{'state'}   = $world->{init};
     $self->{'status'}  = 'busy';
     $self->{'oldmove'} = 'nil';
     $self->{'turn'}    = 0;
 
-    #    warn "ABM 82\n". Dumper $world->{analyze};
+    # warn "ABM 82\n". Dumper $world->{analyze};
     $self->{'searchlevel'} =
         ( $world->{analyze}->{firstmoves} > 1
         ? int( log($mconst) / log( $world->{analyze}->{firstmoves} ) )
@@ -118,7 +121,7 @@ sub start {
 
 =head2 play
 
-Choose next move.
+Find next move.
 
 =cut
 
@@ -138,8 +141,7 @@ sub play {
         }
     }
     my @actions = $self->findlegals( $self->{'role'}, $state );
-    $self->loginfo(
-        "TURN:" . $self->{'turn'} . " Actions: " . scalar(@actions) . " searchlevel: " . $self->{'searchlevel'} );
+    $self->loginfo( "TURN:" . $self->{'turn'} . " Actions: " . scalar(@actions) . " Level: " . $self->{'searchlevel'} );
     if ( !$#actions ) {
 
         #return if only one legal move
@@ -160,35 +162,17 @@ sub play {
             $self->{'searchlevel'}++;
         } else {
             my $num = $dummy * scalar(@actions);
-
-            # $self->loginfo("Ok level: $num $dummy");
+            $self->loginfo("Ok level: $num $dummy");
         }
     }
     return $move2;
 }
 
-=head2 simulate
-
-Find next state. For looking forward. Simulate moves.
-
-=cut
-
-sub simulate {
-    my ( $self, $move, $state ) = @_;
-    confess 'ERROR: $state is not defined' if !defined $state;
-    if ( $move eq 'nil' ) {
-        return $state;
-    }
-    return findnext( $move, $state );
-}
 
 =head2 bestmove
 
 return scores_ar and actions_ar
 Loop trough all move warnings with a while
-
- alpha = highest score
- beta = lowest score
 
 =cut
 
@@ -229,9 +213,7 @@ sub _maxscore {
         return $self->findreward( $role, $state );
     }
     if ( $level > $self->{'searchlevel'} || $self->p_timer_is_expired() ) {
-
-        #return 51;
-        return $self->goal_heuristics( $state, $self->{'role'} );    # state required, role optional
+        return 51;
     }
     $level++;
     my @actions = $self->findlegals( $role, $state );
@@ -239,6 +221,8 @@ sub _maxscore {
         my $result = $self->_minscore( $role, $level, $actions[$i], $state, $alpha, $beta );
         $alpha = max( $alpha, $result );
         if ( $alpha >= $beta ) {
+
+            #            $self->loginfo($level.":".data_to_gdl($actions[$i])." score 51 $alpha,$beta");
             return $beta;
         }
     }
@@ -256,9 +240,9 @@ sub _minscore {
         confess "No support for single";
     }
     if ( $level > $self->{'searchlevel'} || $self->p_timer_is_expired() ) {
-        return $self->goal_heuristics( $state, $self->{'role'} );    # state required, role optional
 
-        #        return 51;
+        #        $self->loginfo($level.":".data_to_gdl($action)." score 51 $alpha,$beta");
+        return 51;
     }
     $level++;
     my $opponent = $opponents[0];
@@ -288,8 +272,7 @@ sub _minscore {
         } elsif ( $self->p_timer_is_expired() ) {
 
             #           $self->loginfo($level.":".data_to_gdl($action)." score 51 $alpha,$beta");
-            #return 51;
-            return $self->goal_heuristics( $state, $self->{'role'} );
+            return 51;
         }
 
     }
@@ -300,7 +283,7 @@ sub _minscore {
 
 =head2 abort
 
-Stop agent now.
+Stop before finished
 
 =cut
 
@@ -313,7 +296,7 @@ sub abort {
 
 =head2 stop
 
-Stop agent after end game.
+Called after finished
 
 =cut
 

@@ -1,4 +1,4 @@
-package SH::OOGGP::Agents::MonteCarlo;
+package GGP::Agents::MonteCarlo;
 use strict;
 use warnings;
 use autodie;
@@ -12,13 +12,13 @@ use Storable qw(dclone);
 
 =head1 NAME
 
-SH::OOGGP::Agents::MonteCarlo
+GGP::Agents::MonteCarlo
 
 =head1 SYNOPSIS
 
- use SH::OOGGP::Agents::MonteCarlo;
+ use GGP::Agents::MonteCarlo;
  use Data::Dumper;
- my $agent = SH::OOGGP::Agents::MonteCarlo->new('test');
+ my $agent = GGP::Agents::MonteCarlo->new('test');
  print DUmper $agent->info();
 
 =head1 DESCRIPTION
@@ -48,10 +48,10 @@ BEGIN {
     }
 }
 use lib "$homedir/git/ggp-perl-base/lib";
-use SH::OOGGP::Tools::AgentBase;
-use SH::OOGGP::Tools::Parser qw(parse_gdl);
-use SH::GGP::Tools::Utils qw( data_to_gdl );
-use parent 'SH::OOGGP::Tools::AgentBase';
+use GGP::Tools::AgentBase;
+use GGP::Tools::Parser qw(parse_gdl);
+use GGP::Tools::Utils qw( data_to_gdl );
+use parent 'GGP::Tools::AgentBase';
 
 my @roles;
 my $name         = 'MonteCarlo';

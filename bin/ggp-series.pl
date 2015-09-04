@@ -37,11 +37,11 @@ BEGIN {
     }
 }
 use lib "$homedir/lib";
-use SH::OOGGP::Tools::Match qw( run_match list_rules list_agents);
+use GGP::Tools::Match qw( run_match list_rules list_agents);
 use SH::Script qw( options_and_usage );
-use SH::OOGGP::Tools::Parser qw ( parse_gdl_file);
-use SH::OOGGP::Tools::StateMachine;
-use SH::GGP::Tools::Utils qw (logdest logfile);
+use GGP::Tools::Parser qw ( parse_gdl_file);
+use GGP::Tools::StateMachine;
+use GGP::Tools::Utils qw (logdest logfile);
 use SH::ResultSet qw(rs_convert_from_hashes rs_pretty_format_table rs_aggregate);
 
 my @ARGV_COPY = @ARGV;
@@ -103,7 +103,7 @@ if ( $opts->{info} ) {
 # warn Dumper $match;
         my $rulefile = $match->[2];
         my $world = parse_gdl_file( $rulefile, $opts );
-        my $statem = SH::OOGGP::Tools::StateMachine->new();
+        my $statem = GGP::Tools::StateMachine->new();
         my $state = $statem->get_init_state($world);
         $statem->init_state_analyze( $world, $state );    #modifies $world
         my @roles = @{ $world->{facts}->{role} };

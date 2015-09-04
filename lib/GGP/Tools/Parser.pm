@@ -1,4 +1,4 @@
-package SH::OOGGP::Tools::Parser;
+package GGP::Tools::Parser;
 use Carp;
 use Data::Dumper;
 use autodie;
@@ -8,7 +8,7 @@ use Exporter 'import';
 use List::MoreUtils qw(any none uniq);
 use List::Flatten;
 use File::Slurp;
-use SH::OOGGP::Tools::StateMachine;
+use GGP::Tools::StateMachine;
 use Storable qw(dclone);
 our @EXPORT_OK = qw(parse_gdl_file parse_gdl gdl_to_data readkifraw gdl_pretty);
 my $homedir;
@@ -23,17 +23,17 @@ BEGIN {
 }
 use lib "$homedir/lib";
 
-use SH::GGP::Tools::Utils qw( data_to_gdl logf hashify);
+use GGP::Tools::Utils qw( data_to_gdl logf hashify);
 
 =encoding utf8
 
 =head1 NAME
 
-SH::OOGGP::Tools::Parser - Rule parser
+GGP::Tools::Parser - Rule parser
 
 =head1 SYNOPSIS
 
- use SH::OOGGP::Tools::Parser qw (parse_gdl_file gdl_pretty);
+ use GGP::Tools::Parser qw (parse_gdl_file gdl_pretty);
  my $world = parse_gdl_file($file, $opts);
  print gdl_pretty($world);
 
@@ -655,7 +655,7 @@ sub readkifraw {
     # Expnad facts
     if (%$facts) {
         if ( defined $return ) {
-            my $statem = SH::OOGGP::Tools::StateMachine->new();
+            my $statem = GGP::Tools::StateMachine->new();
             $return = $statem->process_part( $return, $facts, 'nil', 'nil' );    #expand facts
 
             #            confess "Could not handle rulefiles. Not implemented yet";

@@ -1,4 +1,4 @@
-package SH::OOGGP::Agents::MaxMax;
+package GGP::Agents::MaxMax;
 use strict;
 use warnings;
 use autodie;
@@ -25,22 +25,22 @@ BEGIN {
     }
 }
 use lib "$homedir/git/ggp-perl-base/lib";
-use SH::OOGGP::Tools::AgentBase;# qw(findroles findpropositions findactions findinits findlegalx findlegals findnext findreward findrewards findterminalp init  p_start_timer p_timer_is_expired p_timer_time_of_expired);
-use SH::OOGGP::Tools::Parser qw(parse_gdl);
-use SH::GGP::Tools::Utils  qw( data_to_gdl );
-use parent 'SH::OOGGP::Tools::AgentBase';
+use GGP::Tools::AgentBase;# qw(findroles findpropositions findactions findinits findlegalx findlegals findnext findreward findrewards findterminalp init  p_start_timer p_timer_is_expired p_timer_time_of_expired);
+use GGP::Tools::Parser qw(parse_gdl);
+use GGP::Tools::Utils  qw( data_to_gdl );
+use parent 'GGP::Tools::AgentBase';
 
 =encoding utf8
 
 =head1 NAME
 
-SH::OOGGP::Agents::MaxMax
+GGP::Agents::MaxMax
 
 =head1 SYNOPSIS
 
- use SH::OOGGP::Agents::MaxMax;
+ use GGP::Agents::MaxMax;
  use Data::Dumper;
- my $agent = SH::OOGGP::Agents::MaxMax->new();
+ my $agent = GGP::Agents::MaxMax->new();
  print DUmper $agent->info();
 
 =head1 DESCRIPTION

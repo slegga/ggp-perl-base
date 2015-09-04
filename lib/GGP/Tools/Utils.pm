@@ -1,4 +1,4 @@
-package SH::GGP::Tools::Utils;
+package GGP::Tools::Utils;
 use List::Flatten;
 use Carp;
 use autodie;
@@ -26,11 +26,11 @@ BEGIN {
 
 =head1 NAME
 
-SH::GGP::Tools::Utils
+GGP::Tools::Utils
 
 =head1 SYNOPSIS
 
- use SH::GGP::Tools::Utils qw(hashify);
+ use GGP::Tools::Utils qw(hashify);
  use Data::Dumper;
  print hashify(['key','value']);
 
@@ -156,7 +156,7 @@ sub hashify {
                 warn Dumper @in_array;
                 confess "Unhandled. Should becalled recursivily";
                 my $tmpret = hashify($item);
-                my $merge  = Hash::Merge->new('RETAINMENT_PRECEDENT');
+                my $merge  = HaMerge->new('RETAINMENT_PRECEDENT');
                 my $return = merge( $tmpret, $return );
 
             } else {

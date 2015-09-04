@@ -1,4 +1,4 @@
-package SH::OOGGP::Agents::Random;
+package GGP::Agents::Random;
 use strict qw(vars);
 use warnings;
 use autodie;
@@ -9,13 +9,13 @@ use Carp;
 
 =head1 NAME
 
-SH::OOGGP::Agents::Random
+GGP::Agents::Random
 
 =head1 SYNOPSIS
 
- use SH::OOGGP::Agents::Random;
+ use GGP::Agents::Random;
  use Data::Dumper;
- my $agent = SH::OOGGP::Agents::Random->new('test');
+ my $agent = GGP::Agents::Random->new('test');
  print DUmper $agent->info();
 
 =head1 DESCRIPTION
@@ -38,9 +38,9 @@ BEGIN {
     }
 }
 use lib "$homedir/git/ggp-perl-base/lib";
-use SH::OOGGP::Tools::AgentBase;
-use SH::OOGGP::Tools::Parser qw(parse_gdl);
-use parent 'SH::OOGGP::Tools::AgentBase';
+use GGP::Tools::AgentBase;
+use GGP::Tools::Parser qw(parse_gdl);
+use parent 'GGP::Tools::AgentBase';
 
 my $role;
 my @roles;

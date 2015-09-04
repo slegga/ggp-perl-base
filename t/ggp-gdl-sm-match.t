@@ -14,20 +14,20 @@ BEGIN {
     }
 }
 use lib "$homedir/lib";
-use SH::OOGGP::Tools::StateMachine (); #qw ( process_move);
-use SH::OOGGP::Tools::Parser qw(parse_gdl);
-use SH::OOGGP::Agents::Random; #qw (info start play stop abort);
-use SH::GGP::Tools::Utils  qw( hashify extract_variables data_to_gdl logf);
+use GGP::Tools::StateMachine (); #qw ( process_move);
+use GGP::Tools::Parser qw(parse_gdl);
+use GGP::Agents::Random; #qw (info start play stop abort);
+use GGP::Tools::Utils  qw( hashify extract_variables data_to_gdl logf);
 sub test_short_match {
     my $world = shift;
-    my $statem = SH::OOGGP::Tools::StateMachine->new();
+    my $statem = GGP::Tools::StateMachine->new();
     my $state = $statem->get_init_state($world);
     $statem->init_state_analyze( $world, $state );    #modifies $world
     my $id = 'testing';
     my @roles;
-    
+
     for my $i (0 .. $#{ $world->{facts}->{role} } ) {
-       $roles[$i] = {name=>'Random', agent=>SH::OOGGP::Agents::Random->new()};
+       $roles[$i] = {name=>'Random', agent=>GGP::Agents::Random->new()};
        $roles[$i]{agent}->start($id,$world->{facts}->{role}->[$i],$world,5,5,3);
     }
     my $oldmoves = 'nil';
@@ -53,8 +53,7 @@ for my $file(@rulefiles) {
     next if $file =~/proptest/;
     $file =~ s/\.kif$//;
     diag "$file";
-    my $world = SH::OOGGP::Tools::Parser::parse_gdl_file($file);
+    my $world = GGP::Tools::Parser::parse_gdl_file($file);
     test_short_match( $world );
 }
 closedir $dh;
-

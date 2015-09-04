@@ -1,4 +1,4 @@
-package SH::OOGGP::Agents::MaxMaxH;
+package GGP::Agents::MaxMaxH;
 use strict;
 use warnings;
 use autodie;
@@ -12,13 +12,13 @@ use Scalar::Util qw(looks_like_number);
 
 =head1 NAME
 
-SH::OOGGP::Agents::MaxMaxH
+GGP::Agents::MaxMaxH
 
 =head1 SYNOPSIS
 
- use SH::OOGGP::Agents::MaxMaxH;
+ use GGP::Agents::MaxMaxH;
  use Data::Dumper;
- my $agent = SH::OOGGP::Agents::MaxMaxH->new();
+ my $agent = GGP::Agents::MaxMaxH->new();
  print Dumper $agent->info();
 
 =head1 DESCRIPTION
@@ -41,10 +41,10 @@ BEGIN {
     }
 }
 use lib "$homedir/git/ggp-perl-base/lib";
-use SH::OOGGP::Tools::AgentBase;# qw(findroles findpropositions findactions findinits findlegalx findlegals findnext findreward findrewards findterminalp init  p_start_timer p_timer_is_expired p_timer_time_of_expired);
-use SH::OOGGP::Tools::Parser qw(parse_gdl);
-use SH::GGP::Tools::Utils  qw( data_to_gdl );
-use parent 'SH::OOGGP::Tools::AgentBase';
+use GGP::Tools::AgentBase;# qw(findroles findpropositions findactions findinits findlegalx findlegals findnext findreward findrewards findterminalp init  p_start_timer p_timer_is_expired p_timer_time_of_expired);
+use GGP::Tools::Parser qw(parse_gdl);
+use GGP::Tools::Utils  qw( data_to_gdl );
+use parent 'GGP::Tools::AgentBase';
 
 my @roles;
 my $name = 'MaxMaxH';

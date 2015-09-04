@@ -1,4 +1,4 @@
-package SH::OOGGP::Tools::StateMachine;
+package GGP::Tools::StateMachine;
 use Mouse;
 use Carp;
 use warnings;
@@ -8,8 +8,8 @@ use Data::Compare;
 use autodie;
 use Exporter 'import';
 use List::MoreUtils qw(any uniq first_index none);
-use SH::OOGGP::Tools::Variables;
-use SH::GGP::Tools::Utils qw( hashify extract_variables data_to_gdl logf);
+use GGP::Tools::Variables;
+use GGP::Tools::Utils qw( hashify extract_variables data_to_gdl logf);
 use Storable qw(dclone);
 use Hash::Merge qw( merge );
 
@@ -19,12 +19,12 @@ use Hash::Merge qw( merge );
 
 =head1 NAME
 
-SH::OOGGP::Tools::StateMachine - New easier to change module of SH::GGP::Tools::StateMachine
+GGP::Tools::StateMachine - New easier to change module of SH::GGP::Tools::StateMachine
 
 =head1 SYNOPSIS
 
-    use SH::OOGGP::Tools::StateMachine;
-    $state = SH::OOGGP::Tools::StateMachine->new();
+    use GGP::Tools::StateMachine;
+    $state = GGP::Tools::StateMachine->new();
 
 =head1 DESCRIPTION
 
@@ -358,7 +358,7 @@ sub get_result_fromarule {
     my $moves    = shift;
     my $rule     = shift;
     confess 'Input should not be undef' if any { !defined $_ } ( $roles, $state_hr, $rule );
-    my $vars = SH::OOGGP::Tools::Variables->new();
+    my $vars = GGP::Tools::Variables->new();
 
     #return @tmpreturn;
     # loop thru one and one criteria
@@ -413,7 +413,7 @@ sub get_result_fromrules {
     my $state_hr = shift;
     my $moves    = shift;
     my @tmprules = @_;
-    confess '$self is not ok it is ' . ( ref $self || $self ) if ref $self ne 'SH::OOGGP::Tools::StateMachine';
+    confess '$self is not ok it is ' . ( ref $self || $self ) if ref $self ne 'GGP::Tools::StateMachine';
 
     #    warn ref $self;
     confess 'Input should not be undef' if any { !defined $_ } ( $roles, $state_hr, $moves );
@@ -421,7 +421,7 @@ sub get_result_fromrules {
     confess '$state_hr is undef' if !defined $state_hr;
 
     my @return = ();
-    my $vars   = SH::OOGGP::Tools::Variables->new();
+    my $vars   = GGP::Tools::Variables->new();
 
     #return @tmpreturn;
     for my $rule (@tmprules) {

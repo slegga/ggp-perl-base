@@ -28,12 +28,12 @@ BEGIN {
 
 use lib "$homedir/lib";
 
-use SH::OOGGP::Tools::Parser ();
+use GGP::Tools::Parser ();
 
 sub get_check_parser_order {
     my $gdlfilepath = shift;
     my $text        = read_file("$homedir/share/kif/$gdlfilepath.kif");
-    my @gdllines = SH::OOGGP::Tools::Parser::gdl_concat_lines($text);
+    my @gdllines = GGP::Tools::Parser::gdl_concat_lines($text);
     my @gdllines2;
     for my $gdlline (@gdllines) {
         next if ! $gdlline;
@@ -41,7 +41,7 @@ sub get_check_parser_order {
         push(@gdllines2, $gdlline);
     }
     my $norows = @gdllines2;
-    my $gdl = SH::OOGGP::Tools::Parser::gdl_order_and_group_lines( @gdllines );
+    my $gdl = GGP::Tools::Parser::gdl_order_and_group_lines( @gdllines );
     my $afternorows = @{$gdl->{facts}} + @{$gdl->{init}} + @{$gdl->{head}} + @{$gdl->{body}};
     is ($norows, $afternorows, 'Have the right number of rows after ordering');
     my $test =1;

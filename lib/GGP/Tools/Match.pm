@@ -1,4 +1,4 @@
-package SH::OOGGP::Tools::Match;
+package GGP::Tools::Match;
 use strict qw(vars);
 use warnings;
 use autodie;
@@ -15,11 +15,11 @@ use open ':locale';#gives out as locale
 
 =head1 NAME
 
-SH::OOGGP::Tools::Match
+GGP::Tools::Match
 
 =head1 SYNOPSIS
 
- use SH::OOGGP::Tools::Match qw(list_rules);
+ use GGP::Tools::Match qw(list_rules);
  print join("\n", list_rules());
 
 =head1 DESCRIPTION
@@ -43,12 +43,11 @@ BEGIN {
     }
 }
 use lib "$homedir/lib";
-use SH::OOGGP::Tools::StateMachine (); #qw ( process_move);
-use SH::OOGGP::Tools::Parser qw(parse_gdl);
-use SH::OOGGP::Agents::Random; #qw (info start play stop abort);
-use SH::OOGGP::Agents::Guided;#  qw (info start play stop abort);
-use SH::GGP::Tools::Utils  qw( hashify extract_variables data_to_gdl logf);
-# use SH::Script qw(options_and_usage);
+use GGP::Tools::StateMachine (); #qw ( process_move);
+use GGP::Tools::Parser qw(parse_gdl);
+use GGP::Agents::Random; #qw (info start play stop abort);
+use GGP::Agents::Guided;#  qw (info start play stop abort);
+use GGP::Tools::Utils  qw( hashify extract_variables data_to_gdl logf);
 our @EXPORT_OK = qw(run_match list_rules list_agents get_number_of_participants);
 
 =head2 list_rules
@@ -76,7 +75,7 @@ Placed in the correct directory.
 =cut
 
 sub list_agents {
-    my $path = "$homedir/lib/SH/OOGGP/Agents/";
+    my $path = "$homedir/lib/GGP/Agents/";
     my $type = '.pm';
     my @agents = glob( $path."*".$type);
     @agents = map {s/^$path//;$_} @agents;
@@ -143,11 +142,11 @@ sub run_match{
         $roles[$i]{name} = $rname;
         if ($particiants[$i]) {
             if ($particiants[$i] eq 'guidedf') {
-                $roles[$i]{agent} = SH::OOGGP::Agents::Guided->new();
+                $roles[$i]{agent} = GGP::Agents::Guided->new();
             } elsif ($particiants[$i] eq 'guidedl') {
-                $roles[$i]{agent} = SH::OOGGP::Agents::Guided->new(13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13);
+                $roles[$i]{agent} = GGP::Agents::Guided->new(13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13);
             } else {
-                my $agent = 'SH::OOGGP::Agents::'.$particiants[$i];
+                my $agent = 'GGP::Agents::'.$particiants[$i];
                 if (! eval "require $agent") {
                     confess("Failed to load plugin: $agent $@");
 
@@ -156,7 +155,7 @@ sub run_match{
             }
             $i++;
         } else {
-            $roles[$i]{agent} = SH::OOGGP::Agents::Random->new();
+            $roles[$i]{agent} = GGP::Agents::Random->new();
             $i++;
         }
     }
@@ -172,7 +171,7 @@ sub run_match{
 
     # MAIN LOOP FOR GAMES
 
-    my $statem = SH::OOGGP::Tools::StateMachine->new($world, \@roles);
+    my $statem = GGP::Tools::StateMachine->new($world, \@roles);
     $i=0;
     my $continue=1;
     my $moves = 'nil';

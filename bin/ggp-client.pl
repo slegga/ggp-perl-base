@@ -17,15 +17,15 @@ BEGIN {
     }
 }
 use lib "$homedir/lib";
-use SH::OOGGP::Tools::StateMachine;
-use SH::OOGGP::Tools::Parser qw(parse_gdl gdl_to_data readkifraw  );
-use SH::GGP::Tools::Utils qw (logf store_result logdest logfile data_to_gdl split_gdl hashify);
+use GGP::Tools::StateMachine;
+use GGP::Tools::Parser qw(parse_gdl gdl_to_data readkifraw  );
+use GGP::Tools::Utils qw (logf store_result logdest logfile data_to_gdl split_gdl hashify);
 
-#use SH::OOGGP::Agents::Random qw (info start play stop abort);
-#use SH::OOGGP::Agents::CompulsiveDeliberation qw (info start play stop abort);
-use SH::OOGGP::Agents::MaxMax;
-use SH::OOGGP::Agents::AlphaBetaM;
-use SH::OOGGP::Agents::Random;
+#use GGP::Agents::Random qw (info start play stop abort);
+#use GGP::Agents::CompulsiveDeliberation qw (info start play stop abort);
+use GGP::Agents::MaxMax;
+use GGP::Agents::AlphaBetaM;
+use GGP::Agents::Random;
 
 =encoding utf8
 
@@ -63,9 +63,9 @@ Make another Mojolicious script with ua to explore ggp-clients
 
 =cut
 
-#my $agent = SH::OOGGP::Agents::Guided->new(4,0,7,0,0,0,0,0,0,0);
-#my $agent = SH::OOGGP::Agents::Random->new();
-my $agent = SH::OOGGP::Agents::AlphaBetaM->new();
+#my $agent = GGP::Agents::Guided->new(4,0,7,0,0,0,0,0,0,0);
+#my $agent = GGP::Agents::Random->new();
+my $agent = GGP::Agents::AlphaBetaM->new();
 my ( $world, $state, $goals );
 my $oldout = '';
 logdest('file');

@@ -1,4 +1,4 @@
-package SH::OOGGP::Agents::Guided;
+package GGP::Agents::Guided;
 use strict qw(vars);
 use warnings;
 use autodie;
@@ -17,14 +17,14 @@ BEGIN {
     }
 }
 use lib "$homedir/git/ggp-perl-base/lib";
-use SH::OOGGP::Tools::AgentBase;
-use parent 'SH::OOGGP::Tools::AgentBase';
+use GGP::Tools::AgentBase;
+use parent 'GGP::Tools::AgentBase';
 
 =encoding utf8
 
 =head1 NAME
 
-SH::OOGGP::Agents::Guided
+GGP::Agents::Guided
 
 =cut
 
@@ -34,9 +34,9 @@ my $name = 'Guided';
 
 =head1 SYNOPSIS
 
- use SH::OOGGP::Agents::Guided;
+ use GGP::Agents::Guided;
  use Data::Dumper;
- my $agent = SH::OOGGP::Agents::Guided->new('test');
+ my $agent = GGP::Agents::Guided->new('test');
  print DUmper $agent->info();
 
 =head1 DESCRIPTION

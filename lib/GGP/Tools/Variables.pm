@@ -1,4 +1,4 @@
-package SH::OOGGP::Tools::Variables;
+package GGP::Tools::Variables;
 use strict qw(vars );
 use warnings;
 use autodie;
@@ -6,19 +6,19 @@ use List::MoreUtils qw(any none);
 use Carp;
 use Data::Dumper;
 use Storable qw(dclone);
-use SH::GGP::Tools::Utils qw( hashify extract_variables data_to_gdl logf);
+use GGP::Tools::Utils qw( hashify extract_variables data_to_gdl logf);
 
 =encoding utf8
 
 =head1 NAME
 
-SH::GDL::Variables - Compute variables
+GGP::Tools::Variables - Compute variables
 
 =head1 SYNOPSIS
 
- use SH::OOGGP::Tools::Variables;
+ use GGP::Tools::Variables;
  use Data::Dumper;
- $var = SH::OOGGP::Tools::Variables->new();
+ $var = GGP::Tools::Variables->new();
  $var->reset();
  print Dumper $var;
 

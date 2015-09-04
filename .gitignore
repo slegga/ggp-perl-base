@@ -1,3 +1,4 @@
 filelist.txt
 *.bak
+*.log
 log/*

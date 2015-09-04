@@ -1,4 +1,4 @@
-package SH::OOGGP::Tools::AgentBase;
+package GGP::Tools::AgentBase;
 use strict qw(vars);
 use warnings;
 use autodie;
@@ -21,9 +21,9 @@ BEGIN {
     }
 }
 use lib "$homedir/lib";
-use SH::OOGGP::Tools::Parser qw(parse_gdl);
-use SH::OOGGP::Tools::StateMachine; #iqw( place_move process_move get_action_history query_item);
-use SH::GGP::Tools::Utils qw( hashify );
+use GGP::Tools::Parser qw(parse_gdl);
+use GGP::Tools::StateMachine; #iqw( place_move process_move get_action_history query_item);
+use GGP::Tools::Utils qw( hashify );
 # our @EXPORT_OK =
 #    qw(findroles findpropositions findactions findinits findlegalx findlegals findnext findreward findrewards findterminalp init findopponents p_start_timer p_timer_time_of_expired p_timer_is_expired median_item);
 
@@ -31,12 +31,12 @@ use SH::GGP::Tools::Utils qw( hashify );
 
 =head1 NAME
 
-SH::OOGGP::Tools::AgentBase
+GGP::Tools::AgentBase
 
 =head1 SYNOPSIS
 
-	use SH::OOGGP::Tools::AgentBase;
-    use parent 'SH::OOGGP::Tools::AgentBase';
+	use GGP::Tools::AgentBase;
+    use parent 'GGP::Tools::AgentBase';
     sub new_child {
         my ($class_name) = @_;
         my $self = $class_name->SUPER::new(@_);
@@ -76,7 +76,7 @@ sub new {
     #    my $starttime;
     #    my $ptimer;
     $self->{'log'} = "$homedir//$class_name.log";
-    $self->{sm} = SH::OOGGP::Tools::StateMachine->new();
+    $self->{sm} = GGP::Tools::StateMachine->new();
     if ( -f $self->{'log'} ) {
         unlink( $self->{'log'} );
     }

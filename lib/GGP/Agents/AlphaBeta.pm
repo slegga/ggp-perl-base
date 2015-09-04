@@ -1,4 +1,4 @@
-package SH::OOGGP::Agents::AlphaBeta;
+package GGP::Agents::AlphaBeta;
 use strict;
 use warnings;
 use autodie;
@@ -13,13 +13,13 @@ use Scalar::Util qw(looks_like_number);
 
 =head1 NAME
 
-SH::OOGGP::Agents::AlphaBeta
+GGP::Agents::AlphaBeta
 
 =head1 SYNOPSIS
 
- use SH::OOGGP::Agents::AlphaBeta;
+ use GGP::Agents::AlphaBeta;
  use Data::Dumper;
- my $agent = SH::OOGGP::Agents::AlphaBeta('AlphaBeta');
+ my $agent = GGP::Agents::AlphaBeta('AlphaBeta');
  print Dumper $agent->info();
 
 =head1 DESCRIPTION
@@ -41,10 +41,10 @@ BEGIN {
     }
 }
 use lib "$homedir/git/ggp-perl-base/lib";
-use SH::OOGGP::Tools::AgentBase;
-use SH::OOGGP::Tools::Parser qw(parse_gdl);
-use SH::GGP::Tools::Utils qw( data_to_gdl );
-use parent 'SH::OOGGP::Tools::AgentBase';
+use GGP::Tools::AgentBase;
+use GGP::Tools::Parser qw(parse_gdl);
+use GGP::Tools::Utils qw( data_to_gdl );
+use parent 'GGP::Tools::AgentBase';
 
 my @roles;
 my $name = 'AlphaBeta';

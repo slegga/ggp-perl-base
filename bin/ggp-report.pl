@@ -36,7 +36,7 @@ BEGIN {
 }
 
 use lib "$homedir/lib";
-use SH::OOGGP::Tools::Match qw (run_match list_rules list_agents);
+use GGP::Tools::Match qw (run_match list_rules list_agents);
 use SH::Script qw(options_and_usage);
 
 my @ARGV_COPY = @ARGV;

@@ -35,11 +35,11 @@ BEGIN {
     }
 }
 use lib "$homedir/lib";
-use SH::OOGGP::Tools::Match qw ( run_match list_rules list_agents);
+use GGP::Tools::Match qw ( run_match list_rules list_agents);
 use SH::Script qw( options_and_usage );
-use SH::OOGGP::Tools::Parser qw ( parse_gdl_file);
-use SH::OOGGP::Tools::StateMachine;# qw ( get_init_state  init_state_analyze);
-use SH::GGP::Tools::Utils qw (logdest logfile);
+use GGP::Tools::Parser qw ( parse_gdl_file);
+use GGP::Tools::StateMachine;# qw ( get_init_state  init_state_analyze);
+use GGP::Tools::Utils qw (logdest logfile);
 use SH::ResultSet
   qw(rs_convert_from_hashes rs_pretty_format_table rs_aggregate);
 
@@ -103,7 +103,7 @@ if ( $opts->{info} ) {
         @agents = $opts->{agents} ? split( /\,/, $opts->{agents} ) : ();
     }
     my $world = parse_gdl_file( $opts->{rulefile}, $opts );
-    my $statem = SH::OOGGP::Tools::StateMachine->new();
+    my $statem = GGP::Tools::StateMachine->new();
     my $state = $statem->get_init_state($world);
     $statem->init_state_analyze( $world, $state );    #modifies $world
 
@@ -141,7 +141,7 @@ if ( $opts->{info} ) {
         my @results = ();
         my %rolemap;
         my $world = parse_gdl_file( $opts->{rulefile}, $opts );
-        my $statem = SH::OOGGP::Tools::StateMachine->new();
+        my $statem = GGP::Tools::StateMachine->new();
         my $state = $statem->get_init_state($world);
         $statem->init_state_analyze( $world, $state );    #modifies $world
         my @roles = @{ $world->{roles} };
@@ -188,7 +188,7 @@ if ( $opts->{info} ) {
 
     }
     else {    #single
-        my $statem = SH::OOGGP::Tools::StateMachine->new();
+        my $statem = GGP::Tools::StateMachine->new();
         my $world = parse_gdl_file( $opts->{rulefile}, $opts );
         my $state = $statem->get_init_state($world);
         $statem->init_state_analyze( $world, $state );    #modifies $world

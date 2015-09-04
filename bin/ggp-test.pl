@@ -13,10 +13,10 @@ BEGIN {
     }
 }
 use lib "$homedir/lib";
-use SH::OOGGP::Agents::Guided;
-use SH::OOGGP::Tools::Parser qw(parse_gdl gdl_to_data readkifraw gdl_pretty);
+use GGP::Agents::Guided;
+use GGP::Tools::Parser qw(parse_gdl gdl_to_data readkifraw gdl_pretty);
 use SH::GGP::Tools::Utils qw(data_to_gdl split_gdl);
-my $agent = SH::OOGGP::Agents::Guided->new(4,0,7,0,0,0,0,0,0,0);
+my $agent = GGP::Agents::Guided->new(4,0,7,0,0,0,0,0,0,0);
 my $world;
 say request_from_server('( INFO )');
 

@@ -13,7 +13,7 @@ BEGIN {
 }
 $test->testscript($homedir.'/bin/ooggp-match.pl');
 
-opendir(my $dh, $homedir.'/lib/SH/OOGGP/Agents') || die "can't opendir $some_dir: $!";
+opendir(my $dh, $homedir.'/lib/GGP/Agents') || die "can't opendir $some_dir: $!";
 for my $agent(map { $_ =~ s/\.pm$//;$_} grep {$_ =~/\.pm$/} readdir($dh) ){
     $test->testscript($homedir."/bin/ooggp-match.pl -t1 -a $agent,$agent");
 }
