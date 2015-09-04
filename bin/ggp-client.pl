@@ -7,31 +7,33 @@ use warnings;
 use Storable qw(dclone);
 my $homedir;
 
+use Cwd 'abs_path';
 BEGIN {
-    if ( $^O eq 'MSWin32' ) {
-        $homedir = 'c:\privat';
+    $homedir = abs_path($0);
+    if ($^O eq 'MSWin32') {
+        $homedir =~s|\[^\]+\[^\]+$||;
     } else {
-        $homedir = $ENV{HOME};
+        $homedir =~s|/[^/]+/[^/]+$||;
     }
 }
-use lib "$homedir/git/ggp-perl-base/lib";
-use SH::GGP::Tools::StateMachine qw (process_move get_init_state init_state_analyze );
-use SH::GGP::Tools::Parser qw(parse_gdl gdl_to_data readkifraw  );
+use lib "$homedir/lib";
+use SH::OOGGP::Tools::StateMachine;
+use SH::OOGGP::Tools::Parser qw(parse_gdl gdl_to_data readkifraw  );
 use SH::GGP::Tools::Utils qw (logf store_result logdest logfile data_to_gdl split_gdl hashify);
 
-#use SH::GGP::Agents::Random qw (info start play stop abort);
-#use SH::GGP::Agents::CompulsiveDeliberation qw (info start play stop abort);
-use SH::GGP::Agents::MaxMax;
-use SH::GGP::Agents::AlphaBetaM;
-use SH::GGP::Agents::Random;
+#use SH::OOGGP::Agents::Random qw (info start play stop abort);
+#use SH::OOGGP::Agents::CompulsiveDeliberation qw (info start play stop abort);
+use SH::OOGGP::Agents::MaxMax;
+use SH::OOGGP::Agents::AlphaBetaM;
+use SH::OOGGP::Agents::Random;
 
 =encoding utf8
 
-=head1 NAME 
+=head1 NAME
 
 ggp-client.pl
 
-=head1 DESCRIPTION 
+=head1 DESCRIPTION
 
 This script is planned to use as player on ggp-sites.
 
@@ -61,9 +63,9 @@ Make another Mojolicious script with ua to explore ggp-clients
 
 =cut
 
-#my $agent = SH::GGP::Agents::Guided->new(4,0,7,0,0,0,0,0,0,0);
-#my $agent = SH::GGP::Agents::Random->new();
-my $agent = SH::GGP::Agents::AlphaBetaM->new();
+#my $agent = SH::OOGGP::Agents::Guided->new(4,0,7,0,0,0,0,0,0,0);
+#my $agent = SH::OOGGP::Agents::Random->new();
+my $agent = SH::OOGGP::Agents::AlphaBetaM->new();
 my ( $world, $state, $goals );
 my $oldout = '';
 logdest('file');
@@ -187,4 +189,3 @@ app->start;
 Slegga
 
 =cut
-

@@ -17,29 +17,30 @@ ggp-series.pl
 
 =head1 DESCRIPTION
 
-Run many matches in series. 
+Run many matches in series.
 
 Output total points.
 
 =cut
 
-# Enable warnings within the Parse::RecDescent module.
 my $homedir;
 my $gdescfile = 'tictactoe0';
 my @movehist;
 
+use Cwd 'abs_path';
 BEGIN {
-    if ( $^O eq 'MSWin32' ) {
-        $homedir = 'c:\privat';
+    $homedir = abs_path($0);
+    if ($^O eq 'MSWin32') {
+        $homedir =~s|\[^\]+\[^\]+$||;
     } else {
-        $homedir = $ENV{HOME};
+        $homedir =~s|/[^/]+/[^/]+$||;
     }
 }
-use lib "$homedir/git/ggp-perl-base/lib";
-use SH::GGP::Tools::Match qw ( run_match list_rules list_agents);
+use lib "$homedir/lib";
+use SH::OOGGP::Tools::Match qw( run_match list_rules list_agents);
 use SH::Script qw( options_and_usage );
-use SH::GGP::Tools::Parser qw ( parse_gdl_file);
-use SH::GGP::Tools::StateMachine qw ( get_init_state  init_state_analyze);
+use SH::OOGGP::Tools::Parser qw ( parse_gdl_file);
+use SH::OOGGP::Tools::StateMachine;
 use SH::GGP::Tools::Utils qw (logdest logfile);
 use SH::ResultSet qw(rs_convert_from_hashes rs_pretty_format_table rs_aggregate);
 
@@ -99,13 +100,13 @@ if ( $opts->{info} ) {
     for my $match (@matches) {
         next if $match->[0] eq $match->[1];
         my %rolemap;
-        warn Dumper $match;
+# warn Dumper $match;
         my $rulefile = $match->[2];
         my $world = parse_gdl_file( $rulefile, $opts );
-
-        my $state = get_init_state($world);
-        init_state_analyze( $world, $state );    #modifies $world
-        my @roles = @{ $world->{roles} };
+        my $statem = SH::OOGGP::Tools::StateMachine->new();
+        my $state = $statem->get_init_state($world);
+        $statem->init_state_analyze( $world, $state );    #modifies $world
+        my @roles = @{ $world->{facts}->{role} };
         $rolemap{ $roles[0] } = $match->[0];
         $rolemap{ $roles[$#roles] } = $match->[1];
         if ( @roles == 1 ) {
@@ -151,4 +152,3 @@ sub cartesian_product {
 Slegga
 
 =cut
-

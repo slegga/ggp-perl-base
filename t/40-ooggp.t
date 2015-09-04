@@ -20,6 +20,6 @@ for my $agent(map { $_ =~ s/\.pm$//;$_} grep {$_ =~/\.pm$/} readdir($dh) ){
 $test->testscript($homedir.'/bin/ggp-report.pl');
 # $test->testscript($homedir.'/bin/ggp-match.pl');
 $test->testscript($homedir.'/bin/ggp-con-ua.pl --help');
-$test->testscript($homedir.'/bin/ggp-server.pl --help');
 $test->testscript($homedir.'/bin/ggp-series.pl --help');
+$test->testscript($homedir.'/bin/ggp-series.pl -r 2pffa,ticTacToe -a MaxMaxH,AlphaBeta -t5');
 done_testing;

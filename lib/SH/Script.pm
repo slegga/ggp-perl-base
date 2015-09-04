@@ -45,8 +45,6 @@ SH::Script - A part of Sleggas personal developer suite
 
 =head1 DESCRIPTION
 
-An alternative to Nx::Script and Applify
-
 The main method is options_and_usage
 Make it easy to document input parameters. And script --help will show
 all form of documentation.
@@ -286,10 +284,6 @@ sub readprivconfig {
     return YAML::Syck::Load(do { local $/; <$FH> }); # slurp content
 }
 
-=head1 SEE ALSO
-
-Nx::Script
-Applify
 
 =head1 AUTHOR
 

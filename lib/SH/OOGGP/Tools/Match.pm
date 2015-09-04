@@ -33,14 +33,16 @@ Utility module for running a match.
 # Enable warnings within the Parse::RecDescent module.
 my $homedir;
 my $gdescfile = 'tictactoe0.kif';
+use Cwd 'abs_path';
 BEGIN {
+    $homedir = abs_path($0);
     if ($^O eq 'MSWin32') {
-        $homedir = 'c:\privat';
+        $homedir =~s|\[^\]+\[^\]+$||;
     } else {
-        $homedir = $ENV{HOME};
+        $homedir =~s|/[^/]+/[^/]+$||;
     }
 }
-use lib "$homedir/git/ggp-perl-base/lib";
+use lib "$homedir/lib";
 use SH::OOGGP::Tools::StateMachine (); #qw ( process_move);
 use SH::OOGGP::Tools::Parser qw(parse_gdl);
 use SH::OOGGP::Agents::Random; #qw (info start play stop abort);
@@ -58,7 +60,7 @@ Placed in the correct directory.
 
 
 sub list_rules {
-    my $path = "$homedir/Dropbox/data/kif/";
+    my $path = "$homedir/share/kif/";
     my $type = '.kif';
     my @rulefiles = glob( $path."*".$type);
     @rulefiles = map {s/^$path//;$_} @rulefiles;

@@ -11,14 +11,16 @@ use Storable qw(dclone);
 
 my $homedir;
 
+use Cwd 'abs_path';
 BEGIN {
-    if ( $^O eq 'MSWin32' ) {
-        $homedir = 'c:\privat';
+    $homedir = abs_path($0);
+    if ($^O eq 'MSWin32') {
+        $homedir =~s|\[^\]+\[^\]+$||;
     } else {
-        $homedir = $ENV{HOME};
+        $homedir =~s|/[^/]+/[^/]+$||;
     }
 }
-use lib "$homedir/git/ggp-perl-base/lib";
+use lib "$homedir/lib";
 use SH::OOGGP::Tools::Parser qw(parse_gdl);
 use SH::OOGGP::Tools::StateMachine; #iqw( place_move process_move get_action_history query_item);
 use SH::GGP::Tools::Utils qw( hashify );
@@ -417,7 +419,7 @@ sub goal_heuristics {
             return @return;
         }
     } else {
-        my @goals = query_item( $self->{ggpworld}, $state_hr, 'goal' );
+        my @goals = $self->{sm}->query_item( $self->{ggpworld}, $state_hr, 'goal' );
         if ( defined $role ) {
             my $reward;
             for my $goal (@goals) {

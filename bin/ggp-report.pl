@@ -25,15 +25,18 @@ Run series of matches to figure out what is best.
 my $homedir;
 my $gdescfile = 'tictactoe0';
 my @movehist;
+use Cwd 'abs_path';
 BEGIN {
+    $homedir = abs_path($0);
     if ($^O eq 'MSWin32') {
-        $homedir = 'c:\privat';
+        $homedir =~s|\[^\]+\[^\]+$||;
     } else {
-        $homedir = $ENV{HOME};
+        $homedir =~s|/[^/]+/[^/]+$||;
     }
 }
-use lib "$homedir/git/ggp-perl-base/lib";
-use SH::GGP::Tools::Match qw (run_match list_rules list_agents);
+
+use lib "$homedir/lib";
+use SH::OOGGP::Tools::Match qw (run_match list_rules list_agents);
 use SH::Script qw(options_and_usage);
 
 my @ARGV_COPY = @ARGV;

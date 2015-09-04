@@ -3,18 +3,20 @@ use Data::Dumper;
 use Carp;
 my $homedir;
 use 5.016;
+use Cwd 'abs_path';
 BEGIN {
+    $homedir = abs_path($0);
     if ($^O eq 'MSWin32') {
-        $homedir = 'c:\privat';
+        $homedir =~s|\[^\]+\[^\]+$||;
     } else {
-        $homedir = $ENV{HOME};
+        $homedir =~s|/[^/]+/[^/]+$||;
     }
 }
-use lib "$homedir/git/ggp-perl-base/lib";
-use SH::GGP::Agents::Guided qw (info start play stop abort);
-use SH::GGP::Tools::Parser qw(parse_gdl data_to_gdl gdl_to_data readkifraw gdl_pretty);
-
-my $agent = SH::GGP::Agents::Guided->new(4,0,7,0,0,0,0,0,0,0);
+use lib "$homedir/lib";
+use SH::OOGGP::Agents::Guided;
+use SH::OOGGP::Tools::Parser qw(parse_gdl gdl_to_data readkifraw gdl_pretty);
+use SH::GGP::Tools::Utils qw(data_to_gdl split_gdl);
+my $agent = SH::OOGGP::Agents::Guided->new(4,0,7,0,0,0,0,0,0,0);
 my $world;
 say request_from_server('( INFO )');
 
@@ -26,16 +28,22 @@ say Dumper gdl_pretty($data);
 sub request_from_server {
     my $gdl = shift;
     say $gdl;
-    my $request = gdl_to_data($gdl);
+    my ( $world, $state, $goals );
+    my $request = split_gdl( $gdl );
+    # my $request = gdl_to_data($gdl);
     #  print "\n\n$content\n";
     my $gdldata;
-    
+
         if (uc $request->[0] eq 'INFO') {
         $gdldata = $agent->info();
     } elsif (uc $request->[0] eq 'START') {
-        $world = readkifraw($request->[3]);
+                ( $world, $state, $goals ) = ( (), (), () );
+        print Dumper $request->[2];
+        $request->[3] = substr( $request->[3], 1, length( $request->[3] ) - 2 );
+        print Dumper $request->[3];
+        $world = parse_gdl( $request->[3], {} );
         $gdldata = $agent->start($request->[1],$request->[2],$world,$request->[4],$request->[5]);
-        
+
     } elsif (uc $request->[0] eq 'PLAY') {
         $gdldata = $agent->play($request->[1],$request->[2],$world->{state});
     } elsif (uc $request->[0] eq 'ABORT') {
