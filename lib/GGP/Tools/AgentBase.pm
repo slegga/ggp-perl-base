@@ -75,7 +75,7 @@ sub new {
     #    my $stimer;
     #    my $starttime;
     #    my $ptimer;
-    $self->{'log'} = "$homedir//$class_name.log";
+    $self->{'log'}          = $homedir.'/log/' . $name . '.log';
     $self->{sm} = GGP::Tools::StateMachine->new();
     if ( -f $self->{'log'} ) {
         unlink( $self->{'log'} );

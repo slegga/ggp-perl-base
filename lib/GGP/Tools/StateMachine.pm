@@ -1,5 +1,5 @@
 package GGP::Tools::StateMachine;
-use Mouse;
+use Moo;
 use Carp;
 use warnings;
 use strict;
