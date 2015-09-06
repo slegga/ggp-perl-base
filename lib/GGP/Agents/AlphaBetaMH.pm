@@ -34,14 +34,16 @@ H for heuristics
 # Enable warnings within the Parse::RecDescent module.
 my $homedir;
 
+use Cwd 'abs_path';
 BEGIN {
-    if ( $^O eq 'MSWin32' ) {
-        $homedir = 'c:\privat';
+    $homedir = abs_path($0);
+    if ($^O eq 'MSWin32') {
+        $homedir =~s|\[^\]+\[^\]+$||;
     } else {
-        $homedir = $ENV{HOME};
+        $homedir =~s|/[^/]+/[^/]+$||;
     }
 }
-use lib "$homedir/git/ggp-perl-base/lib";
+use lib "$homedir/lib";
 use GGP::Tools::AgentBase;
 use GGP::Tools::Parser qw(parse_gdl);
 use GGP::Tools::Utils qw( data_to_gdl );
