@@ -9,7 +9,7 @@ use Exporter 'import';
 use Storable qw(dclone);
 use List::MoreUtils qw(any uniq first_index none);
 use utf8;
-use open ':locale';#gives out as locale
+use open ':encoding(utf8)';#gives out as locale
 
 =encoding utf8
 
