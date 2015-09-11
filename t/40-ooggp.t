@@ -6,7 +6,7 @@ use Cwd 'abs_path';
 BEGIN {
     $homedir = abs_path($0);
     if ($^O eq 'MSWin32') {
-        $homedir =~s|\[^\]+\[^\]+$||;
+        $homedir =~s|/[^/\\]+/[^/\\]+$||;
     } else {
         $homedir =~s|/[^/]+/[^/]+$||;
     }
