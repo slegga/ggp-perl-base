@@ -1,14 +1,16 @@
 package GGP::Tools::StateMachine;
+
 use Moo;
-use Carp;
 use warnings;
 use strict;
-use Data::Dumper;
-use Data::Compare;
 use autodie;
+use GGP::Tools::RuleLine;
+use namespace::clean;
+use Data::Dumper;
+use Carp;
+use Data::Compare;
 use Exporter 'import';
 use List::MoreUtils qw(any uniq first_index none);
-use GGP::Tools::RuleLine;
 use GGP::Tools::Utils qw( hashify extract_variables data_to_gdl logf);
 use Storable qw(dclone);
 use Hash::Merge qw( merge );
