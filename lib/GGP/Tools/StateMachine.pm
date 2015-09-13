@@ -6,6 +6,7 @@ use autodie;
 use Data::Dumper;
 use Carp;
 use Data::Compare;
+use GGP::Tools::RuleLine;
 use List::MoreUtils qw(any uniq first_index none);
 use GGP::Tools::Utils qw( hashify extract_variables data_to_gdl logf);
 use Storable qw(dclone);
@@ -79,6 +80,50 @@ sub get_init_state {
     $return->{legal} = $legal_hr;
 
     return $return;
+}
+
+=head2 query_item
+
+Get all items from a given reserved command state
+
+=cut
+
+sub query_item {
+    my $self     = shift;
+    my $world    = shift;
+    my $state_hr = shift;
+    my $item     = shift;
+
+    confess '$item is undef' if !defined $item;
+    my @tmprules = ();
+    my @return   = ();
+
+    for my $rule ( @{ $world->{body} } ) {
+        if ( ref $rule->{effect} ne 'ARRAY' ) {
+            next if $rule->{effect} ne $item;
+            push( @tmprules, $rule );
+        } else {
+            next if $rule->{effect}->[0] ne $item;
+            my $trule = dclone($rule);
+            shift( @{ $trule->{effect} } );
+            push( @tmprules, $trule );
+        }
+    }
+
+    # expand variables to all possibillities when introduced
+    # make crossed product table generator
+    # filter variables with criteria
+    # return crossed list
+    @return = $self->get_result_fromrules( $world->{facts}->{role}, $state_hr, 'nil', @tmprules );
+    if ( exists $world->{facts}->{$item} ) {
+        my $const = dclone( $world->{facts}->{$item} );
+        if ( ref $const eq 'ARRAY' ) {
+            push( @return, @$const );
+        } else {
+            push( @return, $const );
+        }
+    }
+    return @return;
 }
 
 
@@ -178,7 +223,6 @@ sub query_other {
     # make crossed product table generator
     # filter variables with criteria
     # return crossed list
-    require GGP::Tools::RuleLine;
     for my $tmprule (@tmprules) {
         my $rule = GGP::Tools::RuleLine->new(rule=>$tmprule);
         my @loop = $rule->get_result_fromarule( $world->{facts}->{role}, $return, $moves_ar  );
@@ -336,52 +380,53 @@ sub get_result_fromrules {
     my $vars   = GGP::Tools::Variables->new();
 
     #return @tmpreturn;
-    for my $rule (@tmprules) {
-
+    for my $tmprule (@tmprules) {
+        my $rule = GPP::Tools::RuleLine->new($tmprule);
         # loop thru one and one criteria
-        for my $tmpcriteria ( @{ $rule->{criteria} } ) {
-            next if !$vars->get_bool();
-            if ( !ref $tmpcriteria ) {
-                $vars->do_and( $self->true_varstate( $state_hr, $tmpcriteria, undef, $vars ) );
-
-                #warn $tmpcriteria."\n rule\n".Dumper $rule;
-                #confess "Not a reference \$tmpcriteria";
-                next;
-            }
-
-            my $criteria = dclone($tmpcriteria);
-            my $func     = shift(@$criteria);
-            if ( $func eq 'true' ) {
-                if ( @$criteria > 1 ) {
-                    confess( 'true is not implemented with more than one parameter' . Dumper $criteria);
-                }
-                $vars->do_and( $self->true( $state_hr, $criteria->[0], $vars ) );
-            } elsif ( $func eq 'does' ) {
-                $vars->do_and( $self->does( $roles, $moves, $criteria ) );
-            } elsif ( $func eq 'distinct' ) {
-                $vars->do_and( $vars->distinct($criteria) );
-            } elsif ( $func eq 'or' ) {
-                $vars->do_and($vars->do_or( $self->_or_resolve( $state_hr, $criteria, $vars ) ) );
-            } elsif ( $func eq 'not' ) {
-                $vars->do_and( $self->do_not( $state_hr, $criteria, $vars ) );
-            } elsif (
-                any {
-                    $func eq $_;
-                }
-                ( 'base', 'input' )
-                )
-            {
-                confess "'$func' is not implemented yet as a function";
-            } else {
-                $vars->do_and( $self->true_varstate( $state_hr, $func, $criteria, $vars ) );
-            }
-        }
-        if ( $vars->get_bool() ) {
-            push( @return, $self->get_effect( $rule->{effect}, $vars->get() ) );
-        }
-
-        #        print Dumper $vars->get();
-        $vars->reset;
+        # for my $tmpcriteria ( @{ $rule->{criteria} } ) {
+        #     next if !$vars->get_bool();
+        #     if ( !ref $tmpcriteria ) {
+        #         $vars->do_and( $self->true_varstate( $state_hr, $tmpcriteria, undef, $vars ) );
+        #
+        #         #warn $tmpcriteria."\n rule\n".Dumper $rule;
+        #         #confess "Not a reference \$tmpcriteria";
+        #         next;
+        #     }
+        #
+        #     my $criteria = dclone($tmpcriteria);
+        #     my $func     = shift(@$criteria);
+        #     if ( $func eq 'true' ) {
+        #         if ( @$criteria > 1 ) {
+        #             confess( 'true is not implemented with more than one parameter' . Dumper $criteria);
+        #         }
+        #         $vars->do_and( $self->true( $state_hr, $criteria->[0], $vars ) );
+        #     } elsif ( $func eq 'does' ) {
+        #         $vars->do_and( $self->does( $roles, $moves, $criteria ) );
+        #     } elsif ( $func eq 'distinct' ) {
+        #         $vars->do_and( $vars->distinct($criteria) );
+        #     } elsif ( $func eq 'or' ) {
+        #         $vars->do_and($vars->do_or( $self->_or_resolve( $state_hr, $criteria, $vars ) ) );
+        #     } elsif ( $func eq 'not' ) {
+        #         $vars->do_and( $self->do_not( $state_hr, $criteria, $vars ) );
+        #     } elsif (
+        #         any {
+        #             $func eq $_;
+        #         }
+        #         ( 'base', 'input' )
+        #         )
+        #     {
+        #         confess "'$func' is not implemented yet as a function";
+        #     } else {
+        #         $vars->do_and( $self->true_varstate( $state_hr, $func, $criteria, $vars ) );
+        #     }
+        # }
+        # if ( $vars->get_bool() ) {
+        #     push( @return, $self->get_effect( $rule->{effect}, $vars->get() ) );
+        # }
+        #
+        # #        print Dumper $vars->get();
+        # $vars->reset;
+        push( @return,$rule->get_result_fromarule($roles, $state_hr, $moves));
     }
     return @return;
 }

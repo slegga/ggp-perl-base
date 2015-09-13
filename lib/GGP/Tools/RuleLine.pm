@@ -1,4 +1,4 @@
-package GGP::Tools::StateMachine;
+package GGP::Tools::RuleLine;
 
 use Data::Dumper;
 use Data::Compare;
@@ -40,49 +40,6 @@ has rule => (
 
 =head1 METHODS
 
-=head2 query_item
-
-Get all items from a given reserved command state
-
-=cut
-
-sub query_item {
-    my $self     = shift;
-    my $world    = shift;
-    my $state_hr = shift;
-    my $item     = shift;
-
-    confess '$item is undef' if !defined $item;
-    my @tmprules = ();
-    my @return   = ();
-
-    for my $rule ( @{ $world->{body} } ) {
-        if ( ref $rule->{effect} ne 'ARRAY' ) {
-            next if $rule->{effect} ne $item;
-            push( @tmprules, $rule );
-        } else {
-            next if $rule->{effect}->[0] ne $item;
-            my $trule = dclone($rule);
-            shift( @{ $trule->{effect} } );
-            push( @tmprules, $trule );
-        }
-    }
-
-    # expand variables to all possibillities when introduced
-    # make crossed product table generator
-    # filter variables with criteria
-    # return crossed list
-    @return = $self->get_result_fromrules( $world->{facts}->{role}, $state_hr, 'nil', @tmprules );
-    if ( exists $world->{facts}->{$item} ) {
-        my $const = dclone( $world->{facts}->{$item} );
-        if ( ref $const eq 'ARRAY' ) {
-            push( @return, @$const );
-        } else {
-            push( @return, $const );
-        }
-    }
-    return @return;
-}
 
 
 =head2 get_result_fromarule
