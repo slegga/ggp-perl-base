@@ -6,11 +6,22 @@ use autodie;
 use Data::Dumper;
 use Carp;
 use Data::Compare;
-use GGP::Tools::RuleLine;
 use List::MoreUtils qw(any uniq first_index none);
 use GGP::Tools::Utils qw( hashify extract_variables data_to_gdl logf);
 use Storable qw(dclone);
 use Hash::Merge qw( merge );
+use Cwd 'abs_path';
+# my $homedir;
+# BEGIN {
+#     $homedir = abs_path($0);
+#     if ($^O eq 'MSWin32') {
+#         $homedir =~s|\[^\]+\[^\]+$||;
+#     } else {
+#         $homedir =~s|/[^/]+/[^/]+$||;
+#     }
+# }
+# use lib "$homedir/lib";
+use GGP::Tools::RuleLine;
 
 
 # our @EXPORT_OK = qw(get_init_state place_move process_move get_action_history init_state_analyze query_item);
@@ -381,7 +392,7 @@ sub get_result_fromrules {
 
     #return @tmpreturn;
     for my $tmprule (@tmprules) {
-        my $rule = GPP::Tools::RuleLine->new($tmprule);
+        my $rule = GGP::Tools::RuleLine->new($tmprule);
         # loop thru one and one criteria
         # for my $tmpcriteria ( @{ $rule->{criteria} } ) {
         #     next if !$vars->get_bool();
