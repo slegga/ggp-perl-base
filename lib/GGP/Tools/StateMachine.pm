@@ -1,19 +1,16 @@
 package GGP::Tools::StateMachine;
 
 use Moo;
-use warnings;
-use strict;
 use autodie;
-use GGP::Tools::RuleLine;
-use namespace::clean;
+#use namespace::clean;
 use Data::Dumper;
 use Carp;
 use Data::Compare;
-use Exporter 'import';
 use List::MoreUtils qw(any uniq first_index none);
 use GGP::Tools::Utils qw( hashify extract_variables data_to_gdl logf);
 use Storable qw(dclone);
 use Hash::Merge qw( merge );
+
 
 # our @EXPORT_OK = qw(get_init_state place_move process_move get_action_history init_state_analyze query_item);
 
@@ -120,7 +117,8 @@ sub process_part {
     # filter variables with criteria
     # return crossed list
     for my $tmprule (@tmprules) {
-        my @loop = $self->get_result_fromarule( $state_hr->{role}, $return, $moves_ar, $tmprule );
+        my $rule = GGP::Tools::RuleLine->new(rule=>$tmprule);
+        my @loop =  $rule->get_result_fromarule( $state_hr->{role}, $return, $moves_ar );
 
         for my $key (@loop) {
             if ( ref $key eq 'ARRAY' ) {
@@ -180,8 +178,10 @@ sub query_other {
     # make crossed product table generator
     # filter variables with criteria
     # return crossed list
+    require GGP::Tools::RuleLine;
     for my $tmprule (@tmprules) {
-        my @loop = $self->get_result_fromarule( $world->{facts}->{role}, $return, $moves_ar, $tmprule );
+        my $rule = GGP::Tools::RuleLine->new(rule=>$tmprule);
+        my @loop = $rule->get_result_fromarule( $world->{facts}->{role}, $return, $moves_ar  );
 
         for my $key (@loop) {
             if ( ref $key eq 'ARRAY' ) {

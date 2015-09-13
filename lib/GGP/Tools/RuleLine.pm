@@ -1,17 +1,14 @@
 package GGP::Tools::StateMachine;
-use Moo;
-use Carp;
-use warnings;
-use strict;
+
 use Data::Dumper;
 use Data::Compare;
-use autodie;
-use Exporter 'import';
+use Carp;
 use List::MoreUtils qw(any uniq first_index none);
 use GGP::Tools::Variables;
 use GGP::Tools::Utils qw( hashify extract_variables data_to_gdl logf);
 use Storable qw(dclone);
 use Hash::Merge qw( merge );
+use Moo;
 
 # our @EXPORT_OK = qw(get_init_state place_move process_move get_action_history init_state_analyze query_item);
 
@@ -30,19 +27,16 @@ GGP::Tools::StateMachine - Master of follow rules
 
 API for the Agents and the match scripts/servers.
 
-=head2 DESIGN
-
-Keep methods
-
-get_init_state
-query_premove
-query_postmove
-process_move
-
-New object analyze
- init_state_analyze
-
 Rest of methods put into RuleLine
+
+=head1 ATTRIBUTES
+
+=cut
+
+has rule => (
+    is => 'ro',
+);
+
 
 =head1 METHODS
 
@@ -103,13 +97,12 @@ sub get_result_fromarule {
     my $roles    = shift;
     my $state_hr = shift;
     my $moves    = shift;
-    my $rule     = shift;
-    confess 'Input should not be undef' if any { !defined $_ } ( $roles, $state_hr, $rule );
+    confess 'Input should not be undef' if any { !defined $_ } ( $roles, $state_hr, $moves );
     my $vars = GGP::Tools::Variables->new();
 
     #return @tmpreturn;
     # loop thru one and one criteria
-    for my $tmpcriteria ( @{ $rule->{criteria} } ) {
+    for my $tmpcriteria ( @{ $self->rule->{criteria} } ) {
         next if !$vars->get_bool();
         my $criteria = dclone($tmpcriteria);
         my $func     = shift(@$criteria);
@@ -123,7 +116,7 @@ sub get_result_fromarule {
         } elsif ( $func eq 'distinct' ) {
             $vars->do_and( $vars->distinct($criteria) );
         } elsif ( $func eq 'or' ) {
-            $vars->do_and( $vars->do_or( $self->_or_resolve( $state_hr, $criteria, $vars ), $rule->{effect} ));
+            $vars->do_and( $vars->do_or( $self->_or_resolve( $state_hr, $criteria, $vars ), $self->rule->{effect} ));
         } elsif ( $func eq 'not' ) {
             $vars->do_and( $self->do_not( $state_hr, $criteria, $vars ) );
         } elsif (
@@ -138,7 +131,7 @@ sub get_result_fromarule {
             $vars->do_and( $self->true_varstate( $state_hr, $func, $criteria, $vars ) );
         }
     }
-    my @return = $self->get_effect( $rule->{effect}, $vars->get() );
+    my @return = $self->get_effect( $self->rule->{effect}, $vars->get() );
 
     #     #remove 1 array level
     #     for my $tmp(@return) {
