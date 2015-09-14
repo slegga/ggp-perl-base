@@ -35,6 +35,7 @@ Rest of methods put into RuleLine
 
 has rule => (
     is => 'ro',
+    isa =>sub{confess("huraa") if !ref $_ eq 'HASH'},
 );
 
 
@@ -61,7 +62,7 @@ sub get_result_fromarule {
     # loop thru one and one criteria
     for my $tmpcriteria ( @{ $self->rule->{criteria} } ) {
         next if !$vars->get_bool();
-        my $criteria = dclone($tmpcriteria);
+        my $criteria = ref $tmpcriteria ? dclone($tmpcriteria): [$tmpcriteria];
         my $func     = shift(@$criteria);
         if ( $func eq 'true' ) {
             if ( @$criteria > 1 ) {

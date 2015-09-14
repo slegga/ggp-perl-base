@@ -332,12 +332,13 @@ sub query_nextstate {
 
     # prepare state old with depending rules
 
-    while ( my $rule = shift(@tmprules) ) {
-        if ( ( ref $rule->{effect} ne 'ARRAY' && $rule->{effect} eq $item ) || (ref $rule->{effect} eq 'ARRAY' && $rule->{effect}->[0] eq $item )) {
-            unshift @tmprules, $rule;
+    while ( my $ruletmp = shift(@tmprules) ) {
+        if ( ( ref $ruletmp->{effect} ne 'ARRAY' && $ruletmp->{effect} eq $item ) || (ref $ruletmp->{effect} eq 'ARRAY' && $ruletmp->{effect}->[0] eq $item )) {
+            unshift @tmprules, $ruletmp;
             last;
         }
-        my @loop = $self->get_result_fromarule( $world->{facts}->{role}, $state_hr, $moves, $rule );
+        my $rule = GGP::Tools::RuleLine->new(rule=>$ruletmp);
+        my @loop = $rule->get_result_fromarule( $world->{facts}->{role}, $state_hr, $moves, $rule );
 
         for my $key (@loop) {
             if ( ref $key eq 'ARRAY' ) {
@@ -392,7 +393,7 @@ sub get_result_fromrules {
 
     #return @tmpreturn;
     for my $tmprule (@tmprules) {
-        my $rule = GGP::Tools::RuleLine->new($tmprule);
+        my $rule = GGP::Tools::RuleLine->new(rule=>$tmprule);
         # loop thru one and one criteria
         # for my $tmpcriteria ( @{ $rule->{criteria} } ) {
         #     next if !$vars->get_bool();
