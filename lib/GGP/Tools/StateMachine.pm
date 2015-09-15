@@ -24,7 +24,6 @@ use Cwd 'abs_path';
 use GGP::Tools::RuleLine;
 
 
-# our @EXPORT_OK = qw(get_init_state place_move process_move get_action_history init_state_analyze query_item);
 
 =encoding utf8
 
@@ -346,11 +345,6 @@ sub query_nextstate {
                 my $ikey = shift(@tmp);
                 confess " ref \$key is an " . ref($ikey) . " should be a scalar" . Dumper $key if ref($ikey);
 
-                #                 if (exists $state_hr->{$ikey} && ! ref $state_hr->{$ikey}) {
-                #                     if ($state_hr->{$ikey} ne $tmp[0]) {
-                #                         confess "Need to handle same tag has more than one value";
-                #                     }
-                #                 } else {
                 push( @{ $state_hr->{$ikey} }, \@tmp );
 
                 #                 }
@@ -394,50 +388,6 @@ sub get_result_fromrules {
     #return @tmpreturn;
     for my $tmprule (@tmprules) {
         my $rule = GGP::Tools::RuleLine->new(rule=>$tmprule);
-        # loop thru one and one criteria
-        # for my $tmpcriteria ( @{ $rule->{criteria} } ) {
-        #     next if !$vars->get_bool();
-        #     if ( !ref $tmpcriteria ) {
-        #         $vars->do_and( $self->true_varstate( $state_hr, $tmpcriteria, undef, $vars ) );
-        #
-        #         #warn $tmpcriteria."\n rule\n".Dumper $rule;
-        #         #confess "Not a reference \$tmpcriteria";
-        #         next;
-        #     }
-        #
-        #     my $criteria = dclone($tmpcriteria);
-        #     my $func     = shift(@$criteria);
-        #     if ( $func eq 'true' ) {
-        #         if ( @$criteria > 1 ) {
-        #             confess( 'true is not implemented with more than one parameter' . Dumper $criteria);
-        #         }
-        #         $vars->do_and( $self->true( $state_hr, $criteria->[0], $vars ) );
-        #     } elsif ( $func eq 'does' ) {
-        #         $vars->do_and( $self->does( $roles, $moves, $criteria ) );
-        #     } elsif ( $func eq 'distinct' ) {
-        #         $vars->do_and( $vars->distinct($criteria) );
-        #     } elsif ( $func eq 'or' ) {
-        #         $vars->do_and($vars->do_or( $self->_or_resolve( $state_hr, $criteria, $vars ) ) );
-        #     } elsif ( $func eq 'not' ) {
-        #         $vars->do_and( $self->do_not( $state_hr, $criteria, $vars ) );
-        #     } elsif (
-        #         any {
-        #             $func eq $_;
-        #         }
-        #         ( 'base', 'input' )
-        #         )
-        #     {
-        #         confess "'$func' is not implemented yet as a function";
-        #     } else {
-        #         $vars->do_and( $self->true_varstate( $state_hr, $func, $criteria, $vars ) );
-        #     }
-        # }
-        # if ( $vars->get_bool() ) {
-        #     push( @return, $self->get_effect( $rule->{effect}, $vars->get() ) );
-        # }
-        #
-        # #        print Dumper $vars->get();
-        # $vars->reset;
         push( @return,$rule->get_result_fromarule($roles, $state_hr, $moves));
     }
     return @return;
@@ -531,11 +481,6 @@ sub process_move {
     #    warn data_to_gdl($state_hr);
     #    warn data_to_gdl($world);
         my @next = $self->query_nextstate( $world, $state_hr, $moves );
-    #    warn Dumper @next;
-        #remove firstlevel
-        #     for my $row(@next) {
-        #         $row=$row->[0];
-        #     }
 
         my %contants = ();
         if ( exists $world->{facts} && defined $world->{facts} )
@@ -580,8 +525,6 @@ sub process_move {
             confess "Cant find legal moves2";
         }
 
-        #         my @legals=query_item($world,$return_hr,'legal');
-        #         $return_hr->{'legal'} = \@legals; #end
     }
     return $return_hr;
 }
