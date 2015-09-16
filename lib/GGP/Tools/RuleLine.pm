@@ -10,8 +10,6 @@ use Storable qw(dclone);
 use Hash::Merge qw( merge );
 use Moo;
 
-# our @EXPORT_OK = qw(get_init_state place_move process_move get_action_history init_state_analyze query_item);
-
 =encoding utf8
 
 =head1 NAME

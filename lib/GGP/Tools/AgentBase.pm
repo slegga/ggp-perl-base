@@ -22,7 +22,7 @@ BEGIN {
 }
 use lib "$homedir/lib";
 use GGP::Tools::Parser qw(parse_gdl);
-use GGP::Tools::StateMachine; #iqw( place_move process_move get_action_history query_item);
+use GGP::Tools::StateMachine;
 use GGP::Tools::Utils qw( hashify );
 # our @EXPORT_OK =
 #    qw(findroles findpropositions findactions findinits findlegalx findlegals findnext findreward findrewards findterminalp init findopponents p_start_timer p_timer_time_of_expired p_timer_is_expired median_item);
@@ -170,8 +170,6 @@ sub findroles {
     my $state_hr = shift;
     confess 'Input should not be undef' if any { !defined $_ } ($state_hr);
     return @{ $state_hr->{role} };
-
-    # query_item($ggpworld,$state_hr,'role');
 }
 
 =head2 findpropositions(game)
@@ -205,7 +203,7 @@ sub findinits {
     my $state_hr = shift;
     confess 'Input should not be undef' if any { !defined $_ } ($state_hr);
 
-    return query_item( $state_hr, 'init' );
+    return @{ $state_hr->{'init'} };
 }
 
 =head2 findlegalx(role,state)
@@ -283,7 +281,6 @@ sub findreward {
     }
     my @goals = @{ $state_hr->{goal} };
 
-    #query_item($ggpworld,$state_hr,'goal');
     if ( !@goals ) {
         warn Dumper $state_hr;
         confess "Missing goals";
@@ -341,7 +338,7 @@ sub findterminalp {
     if ( !defined $state_hr ) {
         confess "Missing state_hr";
     }
-    return exists $state_hr->{'terminal'};    #query_item($ggpworld,$state_hr,'terminal');
+    return exists $state_hr->{'terminal'};
 }
 
 =head2 findopponents
@@ -419,7 +416,13 @@ sub goal_heuristics {
             return @return;
         }
     } else {
-        my @goals = $self->{sm}->query_item( $self->{ggpworld}, $state_hr, 'goal' );
+        my @goals =();
+
+        if ( exists $state_hr->{'goal'} ) {
+          @goals = @ { $state_hr->{'goal'} };
+        } else {
+          push @goals,[$_,0] for @{ $self->{roles} };
+        }
         if ( defined $role ) {
             my $reward;
             for my $goal (@goals) {
