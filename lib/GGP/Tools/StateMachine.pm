@@ -418,8 +418,7 @@ sub init_state_analyze {
     }
     $sum -= $#roles;
     $world->{analyze}->{firstmoves} = $sum;
-    my @goals = $self->query_item( $world, $state, 'goal' );
-    if (@goals) {
+    if (exists $state->{'goal'}) {
         $world->{analyze}->{goalheuristic} = 'yes';
     } else {
         $world->{analyze}->{goalheuristic} = 'no';

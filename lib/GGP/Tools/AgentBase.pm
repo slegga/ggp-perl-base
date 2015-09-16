@@ -421,7 +421,8 @@ sub goal_heuristics {
         if ( exists $state_hr->{'goal'} ) {
           @goals = @ { $state_hr->{'goal'} };
         } else {
-          push @goals,[$_,0] for @{ $self->{roles} };
+          my $noroles= @{ $self->{roles} };
+          push @goals,[$_,100/$noroles] for @{ $self->{roles} }; # Set defaults
         }
         if ( defined $role ) {
             my $reward;
