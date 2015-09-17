@@ -37,11 +37,7 @@ my $homedir;
 use Cwd 'abs_path';
 BEGIN {
     $homedir = abs_path($0);
-    if ($^O eq 'MSWin32') {
-        $homedir =~s|\[^\]+\[^\]+$||;
-    } else {
-        $homedir =~s|/[^/]+/[^/]+$||;
-    }
+    $homedir =~s|[^\/\\]+[\/\\][^\/\\]+$||;
 }
 use lib "$homedir/lib";
 use GGP::Tools::AgentBase;

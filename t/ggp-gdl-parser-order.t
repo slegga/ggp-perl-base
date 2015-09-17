@@ -15,12 +15,8 @@ my $homedir;
 my $gdescfile = 'tictactoe0.kif';
 my @movehist;
 BEGIN {
-    if ($^O eq 'MSWin32') {
-        $homedir = 'c:\privat';
-    } else {
-        $homedir = abs_path($0);
-        $homedir =~s|/[^/]+/[^/]+$||;
-    }
+    $homedir = abs_path($0);
+    $homedir =~s|[^\/\\]+[\/\\][^\/\\]+$||;
 }
 
 # perldebug t/ggp-gdl-parser-order.t

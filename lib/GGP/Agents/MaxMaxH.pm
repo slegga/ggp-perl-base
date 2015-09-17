@@ -32,13 +32,12 @@ H = heuristics. Means calculate goal for each state/move.
 =cut
 
 # Enable warnings within the Parse::RecDescent module.
+use Cwd 'abs_path';
+
 my $homedir;
 BEGIN {
-    if ($^O eq 'MSWin32') {
-        $homedir = 'c:\privat';
-    } else {
-        $homedir = $ENV{HOME};
-    }
+    $homedir = abs_path($0);
+    $homedir =~s|[^\/\\]+[\/\\][^\/\\]+$||;
 }
 use lib "$homedir/git/ggp-perl-base/lib";
 use GGP::Tools::AgentBase;# qw(findroles findpropositions findactions findinits findlegalx findlegals findnext findreward findrewards findterminalp init  p_start_timer p_timer_is_expired p_timer_time_of_expired);

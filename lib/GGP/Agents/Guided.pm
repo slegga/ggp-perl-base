@@ -9,12 +9,11 @@ use Carp;
 # Enable warnings within the Parse::RecDescent module.
 my $homedir;
 
+use Cwd 'abs_path';
+
 BEGIN {
-    if ( $^O eq 'MSWin32' ) {
-        $homedir = 'c:\privat';
-    } else {
-        $homedir = $ENV{HOME};
-    }
+    $homedir = abs_path($0);
+    $homedir =~s|[^\/\\]+[\/\\][^\/\\]+$||;
 }
 use lib "$homedir/git/ggp-perl-base/lib";
 use GGP::Tools::AgentBase;

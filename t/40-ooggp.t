@@ -2,20 +2,15 @@ use SH::ScriptTest qw(no_plan);#tests=>4;
 #FIXME
 #Loop over all agents
 use Cwd 'abs_path';
-#BEGIN {
+BEGIN {
     $homedir = abs_path($0);
-#    if ($^O eq 'MSWin32') {
-#        $homedir =~s|\[^\]+\[^\]+$||;
-#    } else {
-        $homedir =~s|/[^/]+/[^/]+$||;
-#    }
-#}
+    $homedir =~s|/[^/\\]+/[^/\\]+$||;
+}
 my $test=SH::ScriptTest->new($homedir,'dev',@ARGV);#projecthome,developmentflag,testsno to execute
-$test->testscript($homedir.'/bin/ooggp-match.pl');
 
 opendir(my $dh, $homedir.'/lib/GGP/Agents') || die "can't opendir $some_dir: $!";
 for my $agent(map { $_ =~ s/\.pm$//;$_} grep {$_ =~/\.pm$/} readdir($dh) ){
-    $test->testscript($homedir."/bin/ooggp-match.pl -t1 -a $agent,$agent");
+    $test->testscript($homedir."/bin/ggp-match.pl -t1 -a $agent,$agent");
 }
 $test->testscript($homedir.'/bin/ggp-report.pl');
 # $test->testscript($homedir.'/bin/ggp-match.pl');

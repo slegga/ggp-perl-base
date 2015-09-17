@@ -12,7 +12,7 @@ use Storable qw(dclone);
 
 =head1 NAME
 
-ggp-match.pl - run a match CLI
+ooggp-match.pl - run a match CLI
 
 =head1 DESCRIPTION
 
@@ -25,20 +25,21 @@ my $homedir;
 my $gdescfile = 'tictactoe0';
 my @movehist;
 
+use Cwd 'abs_path';
 BEGIN {
-    if ( $^O eq 'MSWin32' ) {
-        $homedir = 'c:\privat';
-    }
-    else {
-        $homedir = $ENV{HOME};
+    $homedir = abs_path($0);
+    if ($^O eq 'MSWin32') {
+        $homedir =~s|\[^\]+\[^\]+$||;
+    } else {
+        $homedir =~s|/[^/]+/[^/]+$||;
     }
 }
-use lib "$homedir/git/ggp-perl-base/lib";
-use SH::GGP::Tools::Match qw ( run_match list_rules list_agents);
+use lib "$homedir/lib";
+use GGP::Tools::Match qw ( run_match list_rules list_agents);
 use SH::Script qw( options_and_usage );
-use SH::GGP::Tools::Parser qw ( parse_gdl_file);
-use SH::GGP::Tools::StateMachine qw ( get_init_state  init_state_analyze);
-use SH::GGP::Tools::Utils qw (logdest logfile);
+use GGP::Tools::Parser qw ( parse_gdl_file);
+use GGP::Tools::StateMachine;# qw ( get_init_state  init_state_analyze);
+use GGP::Tools::Utils qw (logdest logfile);
 use SH::ResultSet
   qw(rs_convert_from_hashes rs_pretty_format_table rs_aggregate);
 
@@ -54,6 +55,7 @@ my ( $opts, $usage ) = options_and_usage(
     [ 'quiet|q!',       'Print only result' ],
     [ 'verbose|v!',     'Print log info' ],
     [ 'watch|w=s',      'Comma separated list of state keys to watch' ],
+    [ 'watchrule=s',    'Not implemented yet. Show expanded rule' ],
     [ 'server|s',       'Print data to file' ],
     [ 'iterations|t=n', 'Max states calculated' ],
     [ 'timed=n',        'Count how many games in n minutes.', ],
@@ -70,7 +72,7 @@ if ( $opts->{info} ) {
         for my $rule (@allrules) {
             my $world = parse_gdl_file( $rule, { server => 1 } );
 
-            my $state = get_init_state($world);
+            my $state = $->get_init_state($world);
             init_state_analyze( $world, $state );    #modifies $world
             my $tmp = $world->{analyze};
 
@@ -84,14 +86,44 @@ if ( $opts->{info} ) {
         print rs_pretty_format_table($rs);
 
     }
-}
-elsif ( $opts->{timed} ) {
-    die "Unimplemented";
+} elsif ( $opts->{timed} ) {
+    logdest('file');
+    my $logfile = $homedir . '/log/ggp-match.log';
+    if ( -f $logfile ) {
+        unlink($logfile);
+    }
+    logfile($logfile);
 
-    # Run same game again and again until time is up.
+    # Run the same game again and again until time is up.
     # Count number of games.
-}
-else {
+    # For use in speed testing
+    my @agents = ();
+    my %result;
+    if ( $opts->{agents} ) {
+        @agents = $opts->{agents} ? split( /\,/, $opts->{agents} ) : ();
+    }
+    my $world = parse_gdl_file( $opts->{rulefile}, $opts );
+    my $statem = GGP::Tools::StateMachine->new();
+    my $state = $statem->get_init_state($world);
+    $statem->init_state_analyze( $world, $state );    #modifies $world
+
+    my @roles = @{ $world->{facts}->{role} };
+    for my $i ( 0 .. $#roles ) {
+        print( $roles[$i] // '__UNDEF__' ) . ' = '
+            . ( $agents[$i] // '__UNDEF__' ) . "\n";
+
+        #            $result{goals}->[$i].' = '.$result{$roles[$i]};
+    }
+    my $stoptime = time()+60 * $opts->{timed};
+    my $gamecounter = 0;
+    while (time()<$stoptime) {
+        %result = run_match( $world, $state, $opts, @agents );
+        $gamecounter++;
+        print $gamecounter."\n" if $gamecounter % 10 == 0;
+    }
+    print "\n$gamecounter times in ".$opts->{timed}." minutes.".$gamecounter/$opts->{timed} . " per minute\n" ;
+
+} else {
     if ( $opts->{server} || $opts->{quiet} ) {
         logdest('file');
         my $logfile = $homedir . '/log/ggp-match.log';
@@ -109,9 +141,9 @@ else {
         my @results = ();
         my %rolemap;
         my $world = parse_gdl_file( $opts->{rulefile}, $opts );
-
-        my $state = get_init_state($world);
-        init_state_analyze( $world, $state );    #modifies $world
+        my $statem = GGP::Tools::StateMachine->new();
+        my $state = $statem->get_init_state($world);
+        $statem->init_state_analyze( $world, $state );    #modifies $world
         my @roles = @{ $world->{roles} };
         for my $i ( 0 .. $#roles ) {
             print $roles[$i] . ' = ' . $agents[$i] . "\n";
@@ -156,11 +188,12 @@ else {
 
     }
     else {    #single
+        my $statem = GGP::Tools::StateMachine->new();
         my $world = parse_gdl_file( $opts->{rulefile}, $opts );
-        my $state = get_init_state($world);
-        init_state_analyze( $world, $state );    #modifies $world
+        my $state = $statem->get_init_state($world);
+        $statem->init_state_analyze( $world, $state );    #modifies $world
 
-        my @roles = @{ $world->{roles} };
+        my @roles = @{ $world->{facts}->{role} };
         for my $i ( 0 .. $#roles ) {
             print( $roles[$i] // '__UNDEF__' ) . ' = '
               . ( $agents[$i] // '__UNDEF__' ) . "\n";
