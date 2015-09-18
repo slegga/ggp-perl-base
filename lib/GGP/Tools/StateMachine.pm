@@ -129,6 +129,37 @@ sub query_item {
     return @return;
 }
 
+=head2 init_state_analyze
+
+modifies world dirty but works
+
+=cut
+
+sub init_state_analyze {
+    my $self  = shift;
+    my $world = shift;
+    my $state = shift;
+
+    #   warn Dumper @{$state->{legal}->{'red'}};
+    my $sum   = 0;
+    my @roles = @{ $world->{facts}->{role} };
+    for my $role (@roles) {
+        my $tmp = $state->{legal}->{$role};
+        if ( ref $tmp ) {
+            $sum += scalar @{$tmp};
+        } else {
+            $sum++;
+        }
+    }
+    $sum -= $#roles;
+    $world->{analyze}->{firstmoves} = $sum;
+    if (exists $state->{'goal'}) {
+        $world->{analyze}->{goalheuristic} = 'yes';
+    } else {
+        $world->{analyze}->{goalheuristic} = 'no';
+    }
+}
+
 
 =head2 process_part
 
@@ -387,36 +418,6 @@ sub get_result_fromrules {
 }
 
 
-=head2 init_state_analyze
-
-modifies world dirty but works
-
-=cut
-
-sub init_state_analyze {
-    my $self  = shift;
-    my $world = shift;
-    my $state = shift;
-
-    #   warn Dumper @{$state->{legal}->{'red'}};
-    my $sum   = 0;
-    my @roles = @{ $world->{facts}->{role} };
-    for my $role (@roles) {
-        my $tmp = $state->{legal}->{$role};
-        if ( ref $tmp ) {
-            $sum += scalar @{$tmp};
-        } else {
-            $sum++;
-        }
-    }
-    $sum -= $#roles;
-    $world->{analyze}->{firstmoves} = $sum;
-    if (exists $state->{'goal'}) {
-        $world->{analyze}->{goalheuristic} = 'yes';
-    } else {
-        $world->{analyze}->{goalheuristic} = 'no';
-    }
-}
 
 =head2 process_move
 

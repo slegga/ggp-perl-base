@@ -33,7 +33,7 @@ Rest of methods put into RuleLine
 
 has rule => (
     is => 'ro',
-    isa =>sub{confess("huraa") if !ref $_ eq 'HASH'},
+    isa =>sub{confess("huraa") if !ref $_[0] eq 'HASH'},
 );
 
 
