@@ -42,13 +42,6 @@ API for the Agents and the match scripts/servers.
 
 =head2 DESIGN
 
-Keep methods
-
-get_init_state
-query_premove
-query_postmove
-process_move
-get_result_fromrules
 
 New object analyze
  init_state_analyze
@@ -199,7 +192,7 @@ sub process_part {
 
 =head2 query_other
 
-OBSOLETE
+Going to split this somehow, into common, terminal, legal, goal
 
 Get all items not reserved in gdl from state
 Must be calculated after next when calculate next state.
