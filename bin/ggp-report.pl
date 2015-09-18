@@ -53,6 +53,9 @@ if ($opts->{info}) {
     print "\n\n";
 } else {
     print time()."\n";
+    if (! -e $homedir . "/log/ggp-results.txt") {
+        `touch $homedir/log/ggp-results.txt`;
+    }
     my $datatext = read_file($homedir . "/log/ggp-results.txt");
     $datatext = "( ".$datatext." )";
     my @data = eval($datatext);

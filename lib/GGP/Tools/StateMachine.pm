@@ -42,13 +42,6 @@ API for the Agents and the match scripts/servers.
 
 =head2 DESIGN
 
-Keep methods
-
-get_init_state
-query_premove
-query_postmove
-process_move
-get_result_fromrules
 
 New object analyze
  init_state_analyze
@@ -136,6 +129,37 @@ sub query_item {
     return @return;
 }
 
+=head2 init_state_analyze
+
+modifies world dirty but works
+
+=cut
+
+sub init_state_analyze {
+    my $self  = shift;
+    my $world = shift;
+    my $state = shift;
+
+    #   warn Dumper @{$state->{legal}->{'red'}};
+    my $sum   = 0;
+    my @roles = @{ $world->{facts}->{role} };
+    for my $role (@roles) {
+        my $tmp = $state->{legal}->{$role};
+        if ( ref $tmp ) {
+            $sum += scalar @{$tmp};
+        } else {
+            $sum++;
+        }
+    }
+    $sum -= $#roles;
+    $world->{analyze}->{firstmoves} = $sum;
+    if (exists $state->{'goal'}) {
+        $world->{analyze}->{goalheuristic} = 'yes';
+    } else {
+        $world->{analyze}->{goalheuristic} = 'no';
+    }
+}
+
 
 =head2 process_part
 
@@ -199,7 +223,7 @@ sub process_part {
 
 =head2 query_other
 
-OBSOLETE
+Going to split this somehow, into common, terminal, legal, goal
 
 Get all items not reserved in gdl from state
 Must be calculated after next when calculate next state.
@@ -394,36 +418,6 @@ sub get_result_fromrules {
 }
 
 
-=head2 init_state_analyze
-
-modifies world dirty but works
-
-=cut
-
-sub init_state_analyze {
-    my $self  = shift;
-    my $world = shift;
-    my $state = shift;
-
-    #   warn Dumper @{$state->{legal}->{'red'}};
-    my $sum   = 0;
-    my @roles = @{ $world->{facts}->{role} };
-    for my $role (@roles) {
-        my $tmp = $state->{legal}->{$role};
-        if ( ref $tmp ) {
-            $sum += scalar @{$tmp};
-        } else {
-            $sum++;
-        }
-    }
-    $sum -= $#roles;
-    $world->{analyze}->{firstmoves} = $sum;
-    if (exists $state->{'goal'}) {
-        $world->{analyze}->{goalheuristic} = 'yes';
-    } else {
-        $world->{analyze}->{goalheuristic} = 'no';
-    }
-}
 
 =head2 process_move
 
