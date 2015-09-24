@@ -133,16 +133,27 @@ if ( $opts->{info} ) {
 }
 
 sub cartesian_product {
-    reduce {
-        [   map {
-                my $item = $_;
-                map [ @$_, $item ], @$a
-            } @$b
-        ];
-    }
-    [ [] ], @_;
+#    reduce {
+#        [   map {
+#                my $item = $_;
+#                map [ @$_, $item ], @$a
+#            } @$b
+#        ];
+#    }
+#    [ [] ], @_;
+#}
+my $last = pop @_;
+
+unless(@_) {
+       return map([$_], @$last);
 }
 
+return map {
+             my $left = $_;
+             map([@$left, $_], @$last)
+           }
+           cartesian_product(@_);
+}
 =head1 AUTHOR
 
 Slegga
