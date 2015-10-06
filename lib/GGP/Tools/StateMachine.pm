@@ -300,41 +300,36 @@ sub query_nextstate {
     my @tmprules = ();
     my @return   = ();
 
-    #find rules before next
-    my $seen_next = 0;
-
-    for my $rule ( @{ $world->{next} } ) {
-
-        #        ...
-        # some where here is the error
-        if ( ref $rule->{effect} ne 'ARRAY' ) {
-            if ( $rule->{effect} ne $item ) {
-                if ($seen_next) {
-                    next;
-                } else {
-                    push( @tmprules, $rule );
-                    next;
-                }
-            }
-            push( @tmprules, $rule );
-            $seen_next = 1;
-        } else {
-            if ( $rule->{effect}->[0] ne $item ) {
-                if ($seen_next) {
-                    next;
-                } else {
-                    push( @tmprules, $rule );
-                    next;
-                }
-            }
-            my $trule = dclone($rule);
-
-            #shift(@{$trule->{effect}});
-            #$trule->{effect} = $trule->{effect}->[0];
-            push( @tmprules, $trule );
-            $seen_next = 1;
-        }
-    }
+    # #find rules before next
+    # my $seen_next = 0;
+    #
+    # for my $rule ( @{ $world->{next} } ) {
+    #     if ( ref $rule->{effect} ne 'ARRAY' ) {
+    #         if ( $rule->{effect} ne $item ) {
+    #             if ($seen_next) {
+    #                 next;
+    #             } else {
+    #                 push( @tmprules, $rule );
+    #                 next;
+    #             }
+    #         }
+    #         push( @tmprules, $rule );
+    #         $seen_next = 1;
+    #     } else {
+    #         if ( $rule->{effect}->[0] ne $item ) {
+    #             if ($seen_next) {
+    #                 next;
+    #             } else {
+    #                 push( @tmprules, $rule );
+    #                 next;
+    #             }
+    #         }
+    #         my $trule = dclone($rule);
+    #         push( @tmprules, $trule );
+    #         $seen_next = 1;
+    #     }
+    # }
+    @tmprules =  @{ $world->{next} };
 
     # remove old value from old state
     for my $rule (@tmprules) {
