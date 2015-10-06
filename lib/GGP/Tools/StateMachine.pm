@@ -300,36 +300,14 @@ sub query_nextstate {
     my @tmprules = ();
     my @return   = ();
 
-    # #find rules before next
-    # my $seen_next = 0;
-    #
-    # for my $rule ( @{ $world->{next} } ) {
-    #     if ( ref $rule->{effect} ne 'ARRAY' ) {
-    #         if ( $rule->{effect} ne $item ) {
-    #             if ($seen_next) {
-    #                 next;
-    #             } else {
-    #                 push( @tmprules, $rule );
-    #                 next;
-    #             }
-    #         }
-    #         push( @tmprules, $rule );
-    #         $seen_next = 1;
-    #     } else {
-    #         if ( $rule->{effect}->[0] ne $item ) {
-    #             if ($seen_next) {
-    #                 next;
-    #             } else {
-    #                 push( @tmprules, $rule );
-    #                 next;
-    #             }
-    #         }
-    #         my $trule = dclone($rule);
-    #         push( @tmprules, $trule );
-    #         $seen_next = 1;
-    #     }
-    # }
-    @tmprules =  @{ $world->{next} };
+    #find rules before next
+    my $seen_next = 0;
+
+    for my $rule ( @{ $world->{next} } ) {
+      my $trule = dclone($rule);
+
+      push( @tmprules, $trule );
+    }
 
     # remove old value from old state
     for my $rule (@tmprules) {

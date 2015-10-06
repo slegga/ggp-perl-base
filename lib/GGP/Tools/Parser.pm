@@ -137,18 +137,6 @@ sub gdl_concat_lines {
     return @return;
 }
 
-=head2 gdl_order_lines
-
-Order lines for old non oo code.
-
-=cut
-
-# sub gdl_order_lines {
-#     my @lines = @_;
-#     my $rlines = gdl_order_and_group_lines(@lines);
-#     return (@{$rlines->{facts}},@{$rlines->{init}},@{$rlines->{next },@{$rlines->{body}});
-# }
-
 =head2 gdl_order_and_group_lines
 
 This method, when it is ready, replace gdl_order_lines.
@@ -166,7 +154,8 @@ sub gdl_order_and_group_lines {
     my @lines = @_;
     my @lastlines;        # do this later
     my @mostlastlines;    # belongs to a later group
-    my $return = { facts => [], init => [], next => [], body => [] };
+    my $return = { facts => [], init => [], next => [], body => [], terminal=>[], legal=>[]
+      , goal=>[] };
     my $known = {
         next     => 0,
         does     => 0,
@@ -264,21 +253,6 @@ sub gdl_order_and_group_lines {
     my @dependentcies=();
     my $loopcounter = 0;
 
-    # my $numret = @lines;
-    #
-    # # if looping use discarded lines again to solve loop
-    # if ( $numret >= $oldnumret ) {
-    #     push( @lines, @mostlastlines );
-    #     @mostlastlines = ();
-    #     $loopcounter++;
-    #     if ( $loopcounter > 100 ) {
-    #         logf( join( "\n", @lines ) );
-    #         logf( "\nknown\n" . join( "\n", keys %$known ) );
-    #         logf( "\nMissing words:\n" . join( "\n", keys %missing_words ) );
-    #         die "Loop in creating next group";
-    #     }
-    # }
-    # $oldnumret = $numret;
     for my $line (@lines) {
         if ( $line =~ /\bnext\b(.+)/ ) {
             ( $known, $ok ) = _getwords( $line, $known );
