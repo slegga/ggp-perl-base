@@ -38,20 +38,20 @@ sub get_check_parser_order {
     }
     my $norows = @gdllines2;
     my $gdl = GGP::Tools::Parser::gdl_order_and_group_lines( @gdllines );
-    my $afternorows = @{$gdl->{facts}} + @{$gdl->{init}} + @{$gdl->{head}} + @{$gdl->{body}};
+    my $afternorows = @{$gdl->{facts}} + @{$gdl->{init}} + @{$gdl->{'next'}} + @{$gdl->{body}};
     is ($norows, $afternorows, 'Have the right number of rows after ordering');
     my $test =1;
-    # Head test
+    # Next test
     # FIXME
-    # head is hard to test.
+    # Next is hard to test.
     # Remove comment code below and do something similar in a new test file for a finished world "object" in data format.
     #
 #    my @known = grep {defined} map{$_=~/([\w\+]+)/;$1} @{$gdl->{facts}};
 #    push @known,grep {defined} map{$_=~/([\w\+]+)/;$1} @{$gdl->{init}};
 #    push @known,'true','not','distinct','or';
-#    for my $i (0 .. $#{$gdl->{head}}) {
-#        my $line = $gdl->{head}->[$i];
-#        my @lwords = ($gdl->{head}->[$i] =~ /[^?]\b([\w\+]+)/g);
+#    for my $i (0 .. $#{$gdl->{next}}) {
+#        my $line = $gdl->{next}->[$i];
+#        my @lwords = ($gdl->{next}->[$i] =~ /[^?]\b([\w\+]+)/g);
 #        if ($lwords[0] eq 'next') {
 #            shift @lwords;
 #            my $next = shift @lwords;
@@ -62,10 +62,10 @@ sub get_check_parser_order {
 #        for my $lword (@lwords) {
 #            if (none {$lword eq $_ } @known) {
 #               $test = 0;
-#                warn "HEAD";
+#                warn "next";
 #                warn "Error on word: ". $lword;
-#                warn "Error on line: ". $gdl->{head}->[$i];
-#                warn Dumper $gdl->{head};
+#                warn "Error on line: ". $gdl->{next}->[$i];
+#                warn Dumper $gdl->{next};
 #            }
 #        }
 #    }

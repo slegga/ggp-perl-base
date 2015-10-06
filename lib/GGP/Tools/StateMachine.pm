@@ -284,7 +284,7 @@ sub query_other {
 
 =head2 query_nextstate
 
-Handles next rules, aka head rules.
+Handles next rules.
 Shall be removed when new code in implemented
 
 =cut
@@ -303,7 +303,7 @@ sub query_nextstate {
     #find rules before next
     my $seen_next = 0;
 
-    for my $rule ( @{ $world->{head} } ) {
+    for my $rule ( @{ $world->{next} } ) {
 
         #        ...
         # some where here is the error

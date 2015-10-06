@@ -74,7 +74,7 @@ sub parse_gdl {
     if ( $opts->{verbose} ) {
         logf( join( "\n", $gdlrule_hr ) );
     }
-    for my $part (qw(init facts head body)) {
+    for my $part (qw(init facts next body)) {
         my @tmprules;
         for my $line ( @{ $gdlrule_hr->{$part} } ) {
             push( @tmprules, gdl_to_data($line) );
@@ -146,7 +146,7 @@ Order lines for old non oo code.
 # sub gdl_order_lines {
 #     my @lines = @_;
 #     my $rlines = gdl_order_and_group_lines(@lines);
-#     return (@{$rlines->{facts}},@{$rlines->{init}},@{$rlines->{head}},@{$rlines->{body}});
+#     return (@{$rlines->{facts}},@{$rlines->{init}},@{$rlines->{next },@{$rlines->{body}});
 # }
 
 =head2 gdl_order_and_group_lines
@@ -154,7 +154,7 @@ Order lines for old non oo code.
 This method, when it is ready, replace gdl_order_lines.
 
 The goal is to do this with less code.
-The code will be split into facts(constants), init, head(next), body(main)
+The code will be split into facts(constants), init, next, body(main)
 
 Return an hash ref.
 
@@ -166,7 +166,7 @@ sub gdl_order_and_group_lines {
     my @lines = @_;
     my @lastlines;        # do this later
     my @mostlastlines;    # belongs to a later group
-    my $return = { facts => [], init => [], head => [], body => [] };
+    my $return = { facts => [], init => [], next => [], body => [] };
     my $known = {
         next     => 0,
         does     => 0,
@@ -234,7 +234,7 @@ sub gdl_order_and_group_lines {
     }
 
     #
-    #   Do head group
+    #   Do next group
     #
     # must handle next first
 
@@ -275,7 +275,7 @@ sub gdl_order_and_group_lines {
     #         logf( join( "\n", @lines ) );
     #         logf( "\nknown\n" . join( "\n", keys %$known ) );
     #         logf( "\nMissing words:\n" . join( "\n", keys %missing_words ) );
-    #         die "Loop in creating head group";
+    #         die "Loop in creating next group";
     #     }
     # }
     # $oldnumret = $numret;
@@ -325,7 +325,7 @@ sub gdl_order_and_group_lines {
     @mostlastlines = ();
     @lastlines     = ();
     @resultpart    = @{ _local_order_lines( \@resultpart ) };
-    push( @{ $return->{head} }, @resultpart, @nextlines );
+    push( @{ $return->{next} }, @resultpart, @nextlines );
     @resultpart = ();
 
     #
@@ -562,7 +562,7 @@ sub gdl_to_data {
 
 Takes a datastructure
 
-Return a 'world' object of facts, init, head, body
+Return a 'world' object of facts, init, next, body
 
 =cut
 
