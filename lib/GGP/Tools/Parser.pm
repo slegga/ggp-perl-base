@@ -74,7 +74,7 @@ sub parse_gdl {
     if ( $opts->{verbose} ) {
         logf( join( "\n", $gdlrule_hr ) );
     }
-    for my $part (qw(init facts next body)) {
+    for my $part (qw(init facts next body terminal legal goal)) {
         my @tmprules;
         for my $line ( @{ $gdlrule_hr->{$part} } ) {
             push( @tmprules, gdl_to_data($line) );
@@ -264,8 +264,12 @@ sub gdl_order_and_group_lines {
           # ( $known, $ok, $tmpmissing ) = _getwords( $line, $known );
           unshift( @nextlines, $line );
           push(@dependentcies,$firstword);
-        } elsif ( $line =~ /\b(?:goal|terminal|legal)\b/ ) {
-            push( @mostlastlines, $line );
+        } elsif ( $line =~ /\b(?:terminal)\b/ ) {
+            push( @{$return->{terminal}}, $line );
+        } elsif ( $line =~ /\b(?:legal)\b/ ) {
+            push( @{$return->{legal}}, $line );
+        } elsif ( $line =~ /\b(?:goal)\b/ ) {
+            push( @{$return->{goal}}, $line );
         } elsif ( $line =~ /\b(?:init)\b/ ) {
         } else {
             push( @mostlastlines, $line );

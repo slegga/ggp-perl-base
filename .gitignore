@@ -2,3 +2,4 @@ filelist.txt
 *.bak
 *.log
 log/*
+*.ptkdb

@@ -101,16 +101,16 @@ sub query_item {
     my @tmprules = ();
     my @return   = ();
 
-    for my $rule ( @{ $world->{body} } ) {
-        if ( ref $rule->{effect} ne 'ARRAY' ) {
-            next if $rule->{effect} ne $item;
-            push( @tmprules, $rule );
-        } else {
-            next if $rule->{effect}->[0] ne $item;
-            my $trule = dclone($rule);
-            shift( @{ $trule->{effect} } );
-            push( @tmprules, $trule );
-        }
+    for my $rule ( @{ $world->{$item} } ) {
+         if ( ref $rule->{effect} ne 'ARRAY' ) {
+             next if $rule->{effect} ne $item;
+             push( @tmprules, $rule );
+         } else {
+             next if $rule->{effect}->[0] ne $item;
+             my $trule = dclone($rule);
+             shift( @{ $trule->{effect} } );
+             push( @tmprules, $trule );
+         }
     }
 
     # expand variables to all possibillities when introduced
