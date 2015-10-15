@@ -38,8 +38,8 @@ sub get_check_parser_order {
     }
     my $norows = @gdllines2;
     my $gdl = GGP::Tools::Parser::gdl_order_and_group_lines( @gdllines );
-    my $afternorows = @{$gdl->{facts}} + @{$gdl->{init}} + @{$gdl->{'next'}} + @{$gdl->{body}};
-    is ($norows, $afternorows, 'Have the right number of rows after ordering');
+    my $afternorows = @{$gdl->{facts}} + @{$gdl->{init}} + @{$gdl->{'next'}} + @{$gdl->{body}} + @{$gdl->{legal}} + @{$gdl->{goal}} + @{$gdl->{terminal}};
+    is ($afternorows, $norows, 'Have the right number of rows after ordering');
     my $test =1;
     # Next test
     # FIXME
