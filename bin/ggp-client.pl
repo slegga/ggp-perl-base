@@ -7,16 +7,9 @@ use warnings;
 use Storable qw(dclone);
 my $homedir;
 
-use Cwd 'abs_path';
-BEGIN {
-    $homedir = abs_path($0);
-    if ($^O eq 'MSWin32') {
-        $homedir =~s|\[^\]+\[^\]+$||;
-    } else {
-        $homedir =~s|/[^/]+/[^/]+$||;
-    }
-}
-use lib "$homedir/lib";
+use FindBin;
+use lib "$FindBin::Bin/../lib";
+
 use GGP::Tools::StateMachine;
 use GGP::Tools::Parser qw(parse_gdl gdl_to_data readkifraw  );
 use GGP::Tools::Utils qw (logf store_result logdest logfile data_to_gdl split_gdl hashify);
@@ -69,7 +62,7 @@ my $agent = GGP::Agents::AlphaBetaM->new();
 my ( $world, $state, $goals );
 my $oldout = '';
 logdest('file');
-my $logfile = $homedir . '/log/ggp-client.log';
+my $logfile = '$FindBin::Bin/../log/ggp-client.log';
 if ( -f $logfile ) {
     unlink($logfile);
 }
@@ -181,7 +174,7 @@ any '/' => sub {
     $oldout = $out;
     $c->render( 'text' => $out, format => 'acl' );
 };
-
+app->secrets(['dsahfjsfadfhakjfdsjfj']);
 app->start;
 
 =head1 AUTHOR

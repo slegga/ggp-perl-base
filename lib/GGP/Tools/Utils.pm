@@ -196,6 +196,7 @@ Takes a datastructure and return a string packet as gdl/kif with out line break.
 
 sub data_to_gdl {
     my $data   = shift;
+    return '' if !defined $data;
     my $return = _recstringify($data);
     if ( substr( $return, 0, 1 ) ne '(' && ref $data ) {
         $return = '( ' . $return . ' )';

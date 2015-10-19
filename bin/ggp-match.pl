@@ -25,16 +25,8 @@ my $homedir;
 my $gdescfile = 'tictactoe0';
 my @movehist;
 
-use Cwd 'abs_path';
-BEGIN {
-    $homedir = abs_path($0);
-    if ($^O eq 'MSWin32') {
-        $homedir =~s|\[^\]+\[^\]+$||;
-    } else {
-        $homedir =~s|/[^/]+/[^/]+$||;
-    }
-}
-use lib "$homedir/lib";
+use FindBin;
+use lib "$FindBin::Bin/../lib";
 use GGP::Tools::Match qw ( run_match list_rules list_agents);
 use SH::Script qw( options_and_usage );
 use GGP::Tools::Parser qw ( parse_gdl_file);
@@ -42,7 +34,7 @@ use GGP::Tools::StateMachine;# qw ( get_init_state  init_state_analyze);
 use GGP::Tools::Utils qw (logdest logfile);
 use SH::ResultSet
   qw(rs_convert_from_hashes rs_pretty_format_table rs_aggregate);
-
+#my $homedir = $FindBin::Bin."/..";
 my @ARGV_COPY = @ARGV;
 my ( $opts, $usage ) = options_and_usage(
     $0,
