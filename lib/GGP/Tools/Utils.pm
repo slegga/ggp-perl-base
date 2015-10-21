@@ -280,7 +280,7 @@ sub split_gdl {
             $space_flag = 0;
         }
         if ( $textline =~ /\G([^\(\)\s]+)/gc ) {
-            $itemno++ if ( $itemno < 0 && $level == $rlevel && !$space_flag );    # !space_flag stop undef extra
+            $itemno++ if ( $itemno < 0);# && $level == $rlevel && !$space_flag );    # !space_flag stop undef extra
             $return->[$itemno] .= $1;
             next;
         }
