@@ -21,7 +21,6 @@ Run one match with given inputs
 =cut
 
 # Enable warnings within the Parse::RecDescent module.
-my $homedir;
 my $gdescfile = 'tictactoe0';
 my @movehist;
 
@@ -34,7 +33,7 @@ use GGP::Tools::StateMachine;# qw ( get_init_state  init_state_analyze);
 use GGP::Tools::Utils qw (logdest logfile);
 use SH::ResultSet
   qw(rs_convert_from_hashes rs_pretty_format_table rs_aggregate);
-#my $homedir = $FindBin::Bin."/..";
+my $homedir = $FindBin::Bin."/..";
 my @ARGV_COPY = @ARGV;
 my ( $opts, $usage ) = options_and_usage(
     $0,
