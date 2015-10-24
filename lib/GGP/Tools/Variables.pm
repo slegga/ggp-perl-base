@@ -24,6 +24,9 @@ GGP::Tools::Variables - Compute variables
 
 =head1 DESCRIPTION
 
+Can not be a Moo object. Matches will be about 30% slower.
+Instead test heavely.
+
 Contain the variables for current line. Represented as a table
 Can be true or false.
 
@@ -77,6 +80,23 @@ sub get {
     my $true = $self->get_bool();
     return { table => $self->{table}, variable => $self->{variable}, true => $true };
 }
+
+=head2 table
+
+=cut
+
+sub table {
+  return shift->{table};
+}
+
+=head2 table
+
+=cut
+
+sub variable {
+  return shift->{variable};
+}
+
 
 =head2 get_bool
 
