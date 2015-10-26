@@ -171,15 +171,16 @@ sub do_and {
         my @commonvars = ();
         my @uniqinputs = ();
         my @cvkeys     = sort { $input->{variable}->{$a} <=> $input->{variable}->{$b} } keys %{ $input->{variable} };
+        my @variablekeys = keys %{ $self->{variable} };
         for my $cv (@cvkeys) {
-            if ( any { $_ eq $cv } keys %{ $self->{variable} } ) {
+            if ( any { $_ eq $cv } @variablekeys ) {
                 push( @commonvars, $cv );
             } else {
                 push( @uniqinputs, $cv );
             }
         }
         if ( !@commonvars ) {    #make crossed product
-            my $i = ( keys %{ $self->{variable} } );
+            my $i = @variablekeys;
             while ( my ( $key, $value ) = each( %{ $input->{variable} } ) ) {
                 $self->{variable}->{$key} = $i + $value;
             }
@@ -196,6 +197,7 @@ sub do_and {
             my $newtable = [];
 
             # loop thru current variable combination
+            my $variable = $self->{variable};
             for my $sline ( @{ $self->{table} } ) {
 
                 # loop thru input variable combination
@@ -204,7 +206,7 @@ sub do_and {
                     for my $var (@commonvars) {
 
                         # compare if common variables is equal
-                        if ( $sline->[ $self->{variable}->{$var} ] ne $iline->[ $input->{variable}->{$var} ] ) {
+                        if ( $sline->[ $variable->{$var} ] ne $iline->[ $input->{variable}->{$var} ] ) {
                             $false = 1;
                         }
                     }
@@ -227,9 +229,10 @@ sub do_and {
             }
             $self->{table} = $newtable;
             if (@uniqinputs) {
-                my $i = keys %{ $self->{variable} };
+                my $variable = $self->{variable};
+                my $i = keys %{ $variable };
                 for my $uniqi (@uniqinputs) {
-                    $self->{variable}->{$uniqi} = $i;
+                    $variable->{$uniqi} = $i;
                     $i++;
                 }
             }
@@ -262,11 +265,12 @@ sub do_or {
     my @commonvars = ();
     my $return;
     #add data
-    if ( $self->{'true_if_empty'} and ( !keys %{ $self->{variable} } || $self->{variable} eq 'true' ) ) {
+    my $variable = $self->{variable};
+    if ( $self->{'true_if_empty'} and ( !keys %{ $variable } || $variable eq 'true' ) ) {
         my $i       = 0;
         my @extrvar = extract_variables($effect);
         for my $tmpvar (@extrvar) {
-            $self->{variable}->{$tmpvar} = $i;
+            $variable->{$tmpvar} = $i;
             $i++;
         }
         $self->{'true_if_empty'} = 0;
@@ -281,15 +285,15 @@ sub do_or {
             # handle one and one table.
             @cvkeys =
                 sort { $tableset->{variable}->{$a} <=> $tableset->{variable}->{$b} } keys %{ $tableset->{variable} };
-
+            my @variablekeys = keys %{ $variable };
             for my $cv (@cvkeys) {
-                if ( any { $_ eq $cv } keys %{ $self->{variable} } ) {
+                if ( any { $_ eq $cv } @variablekeys ) {
                     push( @commonvars, $cv );
                 } else {
                     logf( Dumper $self );
                     logf( Dumper $tables_ar );
                     logf( "\$cv: " . $cv );
-                    logf( Dumper $self->{variable} );
+                    logf( Dumper $variable );
                     confess "No unique rows in or statments";
                 }
             }
@@ -362,18 +366,20 @@ sub distinct {
     $return->{linebool}    = [];
     my $variable = shift(@$inputs);
     my $remove   = shift(@$inputs);
+    my $variabletmp = $self->{variable};
+
     confess "First argument of distinct must be a variable:" . Dumper $variable if $variable !~ /^\?\w/;
 
     if ( $remove !~ /^\?\w/ ) {
-        my $col = $self->{variable}->{$variable};
+        my $col = $variabletmp->{$variable};
         for my $i ( 0 .. $#{ $self->{table} } ) {
             my $value = $self->{table}->[$i]->[$col];
             confess "ERROR: \$value is undef\n" . Dumper $self if !defined $value;
             $return->{linebool}->[$i] = $value eq $remove ? 0 : 1;
         }
     } else {
-        my $rcol = $self->{variable}->{$remove};
-        my $col = $self->{variable}->{$variable};
+        my $rcol = $variabletmp->{$remove};
+        my $col = $variabletmp->{$variable};
         for my $i ( 0 .. $#{ $self->{table} } ) {
             my $value = $self->{table}->[$i]->[$col];
             $return->{linebool}->[$i] = $self->{table}->[$i]->[$rcol] eq $value ? 0 : 1;

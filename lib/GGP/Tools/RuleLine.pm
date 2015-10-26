@@ -317,8 +317,9 @@ sub true_varstate {
                 my @cvkeys =
                     sort { $return->{variable}->{$a} <=> $return->{variable}->{$b} } keys %{ $return->{variable} };
                 if (@cvkeys) {
+                    my $variabletmp =  $vars->variable;
                     for my $row ( @{ $vars->table } ) {
-                        my @line = map { $row->[ $vars->variable->{$_} ] } @cvkeys;
+                        my @line = map { $row->[ $variabletmp->{$_} ] } @cvkeys;
                         if (@line) {
                             push( @{ $return->{table} }, \@line );
                         }
@@ -366,6 +367,7 @@ sub true_varstate {
                     }
                 }
             } else {    #true inside not use vars insted of state_hr
+                my $variabletmp = $vars->variable;
                 for my $varsrow ( @{ $vars->table } ) {
                     my $i        = 0;
                     my $newline  = [];
@@ -374,7 +376,7 @@ sub true_varstate {
                         if ( substr( $testline[$i], 0, 1 ) eq '?' ) {
 
                             #substitute ?x with a value
-                            my $tmp = $varsrow->[ $vars->variable->{ $testline[$i] } ];
+                            my $tmp = $varsrow->[ $variabletmp->{ $testline[$i] } ];
                             $newline->[ $return->{variable}->{ $testline[$i] } ] = $tmp;
                             $testline[$i] = $tmp;
                         }
@@ -407,8 +409,9 @@ sub true_varstate {
                 if ( !$not ) {
                     push( @$newline, $val );
                 } else {    #not true
+                    my $variabletmp = $vars->variable;
                     for my $row ( @{ $vars->table } ) {
-                        my $notval = $row->[ $vars->variable->{ $values_ar->[$i] } ];
+                        my $notval = $row->[ $variabletmp->{ $values_ar->[$i] } ];
                         $true = 0;    #obmit push $newlinw later
                         if ( $notval ne $val ) {
                             push( @{ $return->{table} }, [$notval] );
