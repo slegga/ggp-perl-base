@@ -18,8 +18,8 @@ GGP::Tools::StateMachine - Master of follow rules
 
 =head1 SYNOPSIS
 
-    use GGP::Tools::StateMachine;
-    $state = GGP::Tools::StateMachine->new();
+    use GGP::Tools::RuleLine;
+    $state = GGP::Tools::RuleLine->new(rule=>{effect=>'effect',criteria=>...});
 
 =head1 DESCRIPTION
 
