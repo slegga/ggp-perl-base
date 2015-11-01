@@ -53,6 +53,8 @@ indexed.
 =head2 optimize_rules
 
 Takes rules return optimized rules.
+Leave rules with 0 or 1 table of facts alone.
+(optional set calculate index for tables accessed several times.)
 
 =cut
 
