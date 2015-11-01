@@ -55,6 +55,10 @@ indexed.
 Takes rules return optimized rules.
 Leave rules with 0 or 1 table of facts alone.
 (optional set calculate index for tables accessed several times.)
+Rules with two or more fact tables are precalculated. If new table is
+lesser than 20 row the precalcfacts are placed first else a other table
+is placed first and an index i calculated for the precalcfacts table.
+and is changed with index_and.
 
 =cut
 
