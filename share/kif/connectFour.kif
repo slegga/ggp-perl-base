@@ -37,7 +37,7 @@
 (<= (legal red (drop ?x))
     (true (control red))
     (columnOpen ?x))
-    
+
 (<= (legal black noop)
     (true (control red)))
 (<= (legal black (drop ?x))
@@ -55,10 +55,10 @@
     (does ?player (drop ?x))
     (cellOpen ?x ?y2)
     (succ ?y1 ?y2)
-    (not (cellOpen ?x ?y1))) 
+    (not (cellOpen ?x ?y1)))
 (<= (next (cell ?x ?y ?player))
     (true (cell ?x ?y ?player)))
-    
+
 (<= (next (control red))
     (true (control black)))
 (<= (next (control black))
@@ -91,7 +91,7 @@
     (not (line red))
     (not (line black))
     boardOpen)
-    
+
 (<= (goal black 100)
     (line black))
 (<= (goal black 50)
@@ -160,7 +160,7 @@
     (true (cell ?x2 ?y3 ?player))
     (true (cell ?x3 ?y2 ?player))
     (true (cell ?x4 ?y1 ?player)))
-    
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Static Relations
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

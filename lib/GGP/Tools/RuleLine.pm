@@ -14,7 +14,7 @@ use Moo;
 
 =head1 NAME
 
-GGP::Tools::StateMachine - Master of follow rules
+GGP::Tools::RuleLine - Handle one rule
 
 =head1 SYNOPSIS
 
@@ -429,6 +429,7 @@ sub true_varstate {
 
 }
 
+# called from true_varstate
 sub _true_if_row_exists {
     my $self     = shift;
     my $state_hr = shift;
