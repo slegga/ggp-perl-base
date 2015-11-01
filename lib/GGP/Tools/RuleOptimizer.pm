@@ -87,54 +87,6 @@ sub optimize_rules {
     return $rules;
 }
 
-=head2 gdl_concat_lines
-
-Takes gdl return an array of lines with one statement/command on each item
-
-=cut
-
-sub gdl_concat_lines {
-    my $text = shift;
-    my @return;
-    my $par_balance = 0;
-    my $longline    = '';
-
-    #make it easier to read
-    for my $line ( split( /\n/, $text ) ) {
-        $line =~ s/\s*\;.*//;
-        next if $line =~ /^\s*$/;
-        next if $line =~ /^\s*\;/;
-        $par_balance += () = $line =~ /\(/g;
-        $par_balance -= () = $line =~ /\)/g;
-        $line =~ s/^\s+//;
-        $line =~ s/\s+$//;
-        $longline .= ' ' . $line;
-
-        if ( $par_balance == 0 ) {
-            my $level      = 0;
-            my $itno       = 0;
-            my @splitlines = ();
-            for my $char ( split( '', $longline ) ) {
-                if ( $char eq '(' ) {
-                    $level++;
-                    $splitlines[$itno] .= $char;
-                } elsif ( $char eq ')' ) {
-                    $level--;
-                    $splitlines[$itno] .= $char;
-                    if ( !$level ) {
-                        $itno++;
-                    }
-                } else {
-                    $splitlines[$itno] .= $char;
-                }
-            }
-
-            push( @return, @splitlines );
-            $longline = '';
-        }
-    }
-    return @return;
-}
 
 =head2 gdl_order_and_group_lines
 

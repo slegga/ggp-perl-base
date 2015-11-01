@@ -139,8 +139,6 @@ sub gdl_concat_lines {
 
 =head2 gdl_order_and_group_lines
 
-This method, when it is ready, replace gdl_order_lines.
-
 The goal is to do this with less code.
 The code will be split into facts(constants), init, next, body(main)
 
