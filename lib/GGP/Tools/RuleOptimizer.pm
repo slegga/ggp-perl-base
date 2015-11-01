@@ -37,7 +37,12 @@ GGP::Tools::RuleOtimizer - Rule optimizer
 
 =head1 DESCRIPTION
 
-Contain functions for transform text to a rule data tree.
+Transform a rule data tree to a optimized rule tree.
+The output will be on internal gdl format.
+Original critera value is always set by the 'set' commando.
+All facts are precalculated if several tables with facts is included, and
+indexed.
+
 
 =cut
 
