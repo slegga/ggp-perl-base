@@ -11,16 +11,6 @@ use GGP::Tools::Utils qw( hashify extract_variables data_to_gdl logf);
 use Storable qw(dclone);
 use Hash::Merge qw( merge );
 use Cwd 'abs_path';
-# my $homedir;
-# BEGIN {
-#     $homedir = abs_path($0);
-#     if ($^O eq 'MSWin32') {
-#         $homedir =~s|\[^\]+\[^\]+$||;
-#     } else {
-#         $homedir =~s|/[^/]+/[^/]+$||;
-#     }
-# }
-# use lib "$homedir/lib";
 use GGP::Tools::RuleLine;
 
 
