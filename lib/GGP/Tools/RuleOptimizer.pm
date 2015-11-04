@@ -536,3 +536,106 @@ Slegga
 =cut
 
 1
+__END__
+      6  HASH(0x9c09658)
+         'criteria' => ARRAY(0x9c09678)
+            0  ARRAY(0x9c04ae0)
+               0  'true'
+               1  ARRAY(0x9c05210)
+                  0  'cell'
+                  1  '?x1'
+                  2  '?y1'
+                  3  '?player'
+            1  ARRAY(0x9c052b0)
+               0  'succ'
+               1  '?x1'
+               2  '?x2'
+            2  ARRAY(0x9c052e0)
+               0  'succ'
+               1  '?x2'
+               2  '?x3'
+            3  ARRAY(0x9c053a0)
+               0  'succ'
+               1  '?x3'
+               2  '?x4'
+            4  ARRAY(0x9c053f0)
+               0  'succ'
+               1  '?y1'
+               2  '?y2'
+            5  ARRAY(0x9c05440)
+               0  'succ'
+               1  '?y2'
+               2  '?y3'
+            6  ARRAY(0x9c05490)
+               0  'succ'
+               1  '?y3'
+               2  '?y4'
+            7  ARRAY(0x9c054e0)
+               0  'true'
+               1  ARRAY(0x9c05280)
+                  0  'cell'
+                  1  '?x2'
+                  2  '?y2'
+                  3  '?player'
+            8  ARRAY(0x9c05530)
+               0  'true'
+               1  ARRAY(0x9c05510)
+                  0  'cell'
+                  1  '?x3'
+                  2  '?y3'
+                  3  '?player'
+            9  ARRAY(0x9c05550)
+               0  'true'
+               1  ARRAY(0x9c05330)
+                  0  'cell'
+                  1  '?x4'
+                  2  '?y4'
+                  3  '?player'
+         'effect' => ARRAY(0x9c05140)
+            0  'line'
+            1  '?player'
+
+will be:
+      6  HASH(0x9c09658)
+         'criteria' => ARRAY(0x9c09678)
+            0  ARRAY(0x9c04ae0)
+               0  'true'
+               1  ARRAY(0x9c05210)
+                  0  'cell'
+                  1  '?x1'
+                  2  '?y1'
+                  3  '?player'
+            1  ARRAY(0x9c052b0)
+               0  'factsconcat'
+               1  '?x1'
+               2  '?x2'
+               2  '?x3'
+               2  '?x4'
+               1  '?y1'
+               2  '?y2'
+               2  '?y3'
+               2  '?y4'
+            7  ARRAY(0x9c054e0)
+               0  'true-lookup'
+               1  ARRAY(0x9c05280)
+                  0  'cell'
+                  1  '?x2'
+                  2  '?y2'
+                  3  '?player'
+            8  ARRAY(0x9c05530)
+               0  'true-lookup'
+               1  ARRAY(0x9c05510)
+                  0  'cell'
+                  1  '?x3'
+                  2  '?y3'
+                  3  '?player'
+            9  ARRAY(0x9c05550)
+               0  'true-lookup'
+               1  ARRAY(0x9c05330)
+                  0  'cell'
+                  1  '?x4'
+                  2  '?y4'
+                  3  '?player'
+         'effect' => ARRAY(0x9c05140)
+            0  'line'
+            1  '?player'
