@@ -61,6 +61,16 @@ sub parse_gdl_file {
 
 Takes a text string and transform to rules  in array of array ref.
 
+{
+  init=>\@,
+  facts=>{name=>[]},
+  next=>{[effect=>[],criteria=>[]},
+  body=>,
+  terminal=>
+  legal=>
+  goal=>
+}
+
 =cut
 
 sub parse_gdl {

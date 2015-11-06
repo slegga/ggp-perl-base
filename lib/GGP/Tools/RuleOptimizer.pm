@@ -64,7 +64,36 @@ sub optimize_rules {
     my $world   = shift;
     my $return;
     for my $rule( @{$world->{body}}) {
-        print "rule ok\n";
+      my $factcounter=0;
+      my @factrules=();
+
+      my $itemcounter=0;
+      my $newrule={effect=>$rule->{effect}};
+      for my $var(map { $_->[0] }@{$rule->{criteria}}) {
+
+        if (any {$var eq $_} keys %{$world->{facts}} ) {
+          push @factrules, $itemcounter;
+          $factcounter++;
+        } else {
+
+        }
+        $itemcounter++;
+      }
+      if ($factcounter>1) {
+        if ($factrules[0]>0) {
+          push @{$newrule->{criteria}}, $rule->{criteria}->[0];
+        } else {
+          #for $i(0 .. $#{$rule->{criteria}})
+          # find first nonfact.
+        }
+        # @factrules
+        printf "must concat facts - $factcounter %s\n", data_to_gdl($newrule);
+        push @{$return->{body}}, $newrule; #must change
+
+      } else {
+        printf "rule ok               %s\n",data_to_gdl($rule);
+        push @{$return->{body}}, $rule;
+      }
     }
     return $return;
 }
