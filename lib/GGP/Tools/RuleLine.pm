@@ -33,19 +33,39 @@ Rest of methods put into RuleLine
 
 has rule => (
     is => 'ro',
-    isa =>sub{confess("huraa") if !ref $_[0] eq 'HASH'},
+    isa =>sub{confess("Wrong rule") if !ref $_[0] eq 'HASH'},
 );
 
+has facts => (
+    is => 'ro',
+    isa =>sub{confess("Wrong facts") if !ref $_[0] eq 'ARRAY'},
+);
 
 =head1 METHODS
 
+=head2 get_facts
 
+
+
+=cut
+
+sub get_facts {
+    my $self = shift;
+    my $vars = GGP::Tools::Variables->new();
+    for  my $fact(@{$self->facts}) {
+        next if !$vars->get_bool();
+        my $func     = shift(@$fact);
+        $vars->do_and( $self->true_varstate( {}, $func, $fact, $vars ) );
+    }
+    return $vars->get();
+}
 
 =head2 get_result_fromarule
 
 Do one and one rule
 
 =cut
+
 
 sub get_result_fromarule {
     my $self = shift;

@@ -42,6 +42,10 @@ All facts are precalculated if several tables with facts is included, and
 indexed.
 
 
+=head1 Testing
+
+perl -Ilib t/RuleOptimizer.t
+
 =cut
 
 
@@ -64,34 +68,33 @@ sub optimize_rules {
     my $world   = shift;
     my $return;
     for my $rule( @{$world->{body}}) {
-      my $factcounter=0;
-      my @factrules=();
+      my @factitem=();
+      my @varitem=();
 
-      my $itemcounter=0;
       my $newrule={effect=>$rule->{effect}};
-      for my $var(map { $_->[0] }@{$rule->{criteria}}) {
+      for my $item(@{$rule->{criteria}}) {
 
-        if (any {$var eq $_} keys %{$world->{facts}} ) {
-          push @factrules, $itemcounter;
-          $factcounter++;
+        if (any {$item->[0] eq $_} keys %{$world->{facts}} ) {
+          push @factitem, $item;
         } else {
+          push @varitem, $item;
 
         }
-        $itemcounter++;
       }
-      if ($factcounter>1) {
-        if ($factrules[0]>0) {
-          push @{$newrule->{criteria}}, $rule->{criteria}->[0];
-        } else {
-          #for $i(0 .. $#{$rule->{criteria}})
-          # find first nonfact.
-        }
+      if (@factitem>1) {
+        push(@{$newrule->{criteria}}, shift(@varitem));
+        # $newrule->{fact}->{values} =[['1','2'], ['3','4']];
         # @factrules
-        printf "must concat facts - $factcounter %s\n", data_to_gdl($newrule);
+            #return @tmpreturn;
+        my $rule = GGP::Tools::RuleLine->new(facts=>\@factitem);
+        $newrule->{fact} = $rule->get_facts();
+    
+        push(@{$newrule->{criteria}}, @varitem);
+        printf "must concat facts  %s\n", data_to_gdl($newrule);
         push @{$return->{body}}, $newrule; #must change
 
       } else {
-        printf "rule ok               %s\n",data_to_gdl($rule);
+        printf "rule ok           %s\n",data_to_gdl($rule);
         push @{$return->{body}}, $rule;
       }
     }
