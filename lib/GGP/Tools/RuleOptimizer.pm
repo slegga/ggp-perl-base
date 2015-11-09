@@ -82,13 +82,19 @@ sub optimize_rules {
         }
       }
       if (@factitem>1) {
-        push(@{$newrule->{criteria}}, shift(@varitem));
+        for my $i(0 .. $#varitem) {
+            if ( none {$varitem[$i][0] eq $_}('not','or','distinct') ) {
+                push(@{$newrule->{criteria}}, splice(@varitem,$i,1));
+                last;
+            }
+        }
         # $newrule->{fact}->{values} =[['1','2'], ['3','4']];
         # @factrules
             #return @tmpreturn;
         my $rule = GGP::Tools::RuleLine->new(facts=>\@factitem);
-        $newrule->{fact} = $rule->get_facts($world->{facts});
-
+        $newrule->{facts} = $rule->get_facts($world->{facts});
+        my %varname = %{$newrule->{facts}->{variable}};
+        push(@{$newrule->{criteria}}, [':facts',sort {$varname{$a} <=> $varname{$b}} keys %varname ]);
         push(@{$newrule->{criteria}}, @varitem);
         printf "must concat facts  %s\n", data_to_gdl($newrule);
         push @{$return->{body}}, $newrule; #must change
