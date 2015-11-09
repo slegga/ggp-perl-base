@@ -51,11 +51,12 @@ has facts => (
 
 sub get_facts {
     my $self = shift;
+    my $worldfacts = shift;
     my $vars = GGP::Tools::Variables->new();
     for  my $fact(@{$self->facts}) {
         next if !$vars->get_bool();
         my $func     = shift(@$fact);
-        $vars->do_and( $self->true_varstate( {}, $func, $fact, $vars ) );
+        $vars->do_and( $self->true_varstate($worldfacts , $func, $fact, $vars ) );
     }
     return $vars->get();
 }

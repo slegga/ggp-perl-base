@@ -87,14 +87,14 @@ sub optimize_rules {
         # @factrules
             #return @tmpreturn;
         my $rule = GGP::Tools::RuleLine->new(facts=>\@factitem);
-        $newrule->{fact} = $rule->get_facts();
-    
+        $newrule->{fact} = $rule->get_facts($world->{facts});
+
         push(@{$newrule->{criteria}}, @varitem);
         printf "must concat facts  %s\n", data_to_gdl($newrule);
         push @{$return->{body}}, $newrule; #must change
 
       } else {
-        printf "rule ok           %s\n",data_to_gdl($rule);
+        printf "rule ok            %s\n",data_to_gdl($rule);
         push @{$return->{body}}, $rule;
       }
     }
