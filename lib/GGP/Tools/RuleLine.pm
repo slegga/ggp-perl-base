@@ -488,7 +488,10 @@ sub true_facts {
     confess '$state_hr is undef or not an hash. :' . ( $state_hr // 'undef' )
         if !defined $state_hr || ref $state_hr ne 'HASH';
     my $statekey=':facts';
-    {...} # need more logging. Not working
+    #{...} # need more logging. Not working
+    warn Dumper $state_hr;
+    warn Dumper $values_ar;
+    warn Dumper $vars;
     return $self->true_varstate( $state_hr, $statekey, $values_ar, $vars, $not );
 }
 
