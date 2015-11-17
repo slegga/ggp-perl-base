@@ -30,7 +30,7 @@ GGP::Tools::RuleOtimizer - Rule optimizer
  use GGP::Tools::Parser qw(gdl_pretty parse_gdl_file);
  use GGP::Tools::RuleOptimizer qw (optimize_rules);
  my $world = parse_gdl_file('connectFour');
- my $world = GGP::Tools::RuleOptimizer::optimize_rules($world);
+ $world = GGP::Tools::RuleOptimizer::optimize_rules($world);
  print gdl_pretty($world);
 
 =head1 DESCRIPTION
@@ -66,12 +66,14 @@ and is changed with index_and.
 
 sub optimize_rules {
     my $world   = shift;
-    my $return;
+    my $opts    =shift;
+    my $return = dclone($world);
+    delete $return->{body}; #copy all remove body because new is generated
     for my $rule( @{$world->{body}}) {
       my @factitem=();
       my @varitem=();
 
-      my $newrule={effect=>$rule->{effect}};
+      my $newrule={effect=>$rule->{effect} };
       for my $item(@{$rule->{criteria}}) {
 
         if (any {$item->[0] eq $_} keys %{$world->{facts}} ) {
@@ -96,11 +98,15 @@ sub optimize_rules {
         my %varname = %{$newrule->{facts}->{variable}};
         push(@{$newrule->{criteria}}, [':facts',sort {$varname{$a} <=> $varname{$b}} keys %varname ]);
         push(@{$newrule->{criteria}}, @varitem);
-        printf "must concat facts  %s\n", data_to_gdl($newrule);
+        if ($opts->{verbose}) {
+            printf "must concat facts  %s\n", data_to_gdl($newrule);
+        }
         push @{$return->{body}}, $newrule; #must change
 
       } else {
-        printf "rule ok            %s\n",data_to_gdl($rule);
+        if ($opts->{verbose}) {
+              printf "rule ok            %s\n",data_to_gdl($rule);
+        }
         push @{$return->{body}}, $rule;
       }
     }

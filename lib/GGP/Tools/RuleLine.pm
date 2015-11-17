@@ -88,6 +88,8 @@ sub get_result_fromarule {
                 confess( 'true is not implemented with more than one parameter' . Dumper $criteria);
             }
             $vars->do_and( $self->true( $state_hr, $criteria->[0], $vars ) );
+        } elsif ( $func eq ':facts') {
+            $vars->do_and($self->true_facts($state_hr, $criteria, $vars));
         } elsif ( $func eq 'does' ) {
             $vars->do_and( $self->does( $roles, $moves, $criteria ) );
         } elsif ( $func eq 'distinct' ) {
@@ -105,7 +107,7 @@ sub get_result_fromarule {
         {
             confess "'$func' is not implemented yet as a function";
         } else {
-            $vars->do_and( $self->true_varstate( $state_hr, $func, $criteria, $vars ) );
+            $vars->do_and( $self->true_varstate( $self->rule, $func, $criteria, $vars ) );
         }
     }
     my @return = $self->get_effect( $self->rule->{effect}, $vars->get() );
@@ -474,6 +476,20 @@ sub _true_if_row_exists {
         confess "Missing input";
     }
     return $return;
+}
+
+
+sub true_facts {
+    my $self      = shift;
+    my $state_hr  = shift;
+    my $values_ar = shift;
+    my $vars      = shift;
+    my $not       = shift;
+    confess '$state_hr is undef or not an hash. :' . ( $state_hr // 'undef' )
+        if !defined $state_hr || ref $state_hr ne 'HASH';
+    my $statekey=':facts';
+    {...} # need more logging. Not working
+    return $self->true_varstate( $state_hr, $statekey, $values_ar, $vars, $not );
 }
 
 =head2 get_varstate_as_table

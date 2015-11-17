@@ -29,6 +29,7 @@ use lib "$FindBin::Bin/../lib";
 use GGP::Tools::Match qw ( run_match list_rules list_agents);
 use SH::Script qw( options_and_usage );
 use GGP::Tools::Parser qw ( parse_gdl_file);
+use GGP::Tools::RuleOptimizer qw (optimize_rules);
 use GGP::Tools::StateMachine;# qw ( get_init_state  init_state_analyze);
 use GGP::Tools::Utils qw (logdest logfile);
 use SH::ResultSet
@@ -62,7 +63,6 @@ if ( $opts->{info} ) {
         my @output   = ();
         for my $rule (@allrules) {
             my $world = parse_gdl_file( $rule, { server => 1 } );
-
             my $state = $->get_init_state($world);
             init_state_analyze( $world, $state );    #modifies $world
             my $tmp = $world->{analyze};
@@ -94,6 +94,8 @@ if ( $opts->{info} ) {
         @agents = $opts->{agents} ? split( /\,/, $opts->{agents} ) : ();
     }
     my $world = parse_gdl_file( $opts->{rulefile}, $opts );
+    $world = GGP::Tools::RuleOptimizer::optimize_rules($world);
+
     my $statem = GGP::Tools::StateMachine->new();
     my $state = $statem->get_init_state($world);
     $statem->init_state_analyze( $world, $state );    #modifies $world
@@ -132,6 +134,8 @@ if ( $opts->{info} ) {
         my @results = ();
         my %rolemap;
         my $world = parse_gdl_file( $opts->{rulefile}, $opts );
+        $world = GGP::Tools::RuleOptimizer::optimize_rules($world);
+
         my $statem = GGP::Tools::StateMachine->new();
         my $state = $statem->get_init_state($world);
         $statem->init_state_analyze( $world, $state );    #modifies $world
@@ -181,6 +185,8 @@ if ( $opts->{info} ) {
     else {    #single
         my $statem = GGP::Tools::StateMachine->new();
         my $world = parse_gdl_file( $opts->{rulefile}, $opts );
+        $world = GGP::Tools::RuleOptimizer::optimize_rules($world);
+
         my $state = $statem->get_init_state($world);
         $statem->init_state_analyze( $world, $state );    #modifies $world
 
