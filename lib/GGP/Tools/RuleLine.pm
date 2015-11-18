@@ -89,7 +89,7 @@ sub get_result_fromarule {
             }
             $vars->do_and( $self->true( $state_hr, $criteria->[0], $vars ) );
         } elsif ( $func eq ':facts') {
-            $vars->do_and($self->true_facts($state_hr, $self->rule,$criteria, $vars));
+            $vars->do_and($self->true_facts($state_hr, $self->rule, $criteria->[0], $vars));
         } elsif ( $func eq 'does' ) {
             $vars->do_and( $self->does( $roles, $moves, $criteria ) );
         } elsif ( $func eq 'distinct' ) {
@@ -107,7 +107,7 @@ sub get_result_fromarule {
         {
             confess "'$func' is not implemented yet as a function";
         } else {
-            $vars->do_and( $self->true_varstate( $self->rule, $func, $criteria, $vars ) );
+            $vars->do_and( $self->true_varstate( $state_hr, $func, $criteria, $vars ) );
         }
     }
     my @return = $self->get_effect( $self->rule->{effect}, $vars->get() );
@@ -488,15 +488,9 @@ sub true_facts {
     my $not       = shift;
     confess '$state_hr is undef or not an hash. :' . ( $state_hr // 'undef' )
         if !defined $state_hr || ref $state_hr ne 'HASH';
-    my $statekey=':facts';
-    $state_hr->{':facts'} = $values_ar->{':facts'};
-    #{...} # need more logging. Not working
-    warn Dumper $state_hr;
-    warn Dumper $values_ar;
-    warn Dumper $vars;
     # Shall return {table=>[] variable=>[],true_if_empty=>0}
-    return {table=>$rule->{':facts'}->{table},
-            variable=>$rule->{':facts'}->{variable},
+    return {table=>$rule->{'facts'}->{table},
+            variable=>$rule->{'facts'}->{variable},
             true_if_empty=>0};
 }
 
