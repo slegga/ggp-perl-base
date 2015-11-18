@@ -478,7 +478,7 @@ sub process_move {
         if ( any { !exists $return_hr->{'legal'}->{$_} } @{ $return_hr->{role} } ) {
             logf( data_to_gdl($state_hr) );
             logf( Dumper $return_hr->{'legal'} );
-            confess "Cant find legal moves2";
+            confess "Cant find legal moves2".Dumper $state_hr;
         }
 
     }
