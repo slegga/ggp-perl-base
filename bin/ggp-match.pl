@@ -114,7 +114,7 @@ if ( $opts->{info} ) {
         $gamecounter++;
         print $gamecounter."\n" if $gamecounter % 10 == 0;
     }
-    print "\n$gamecounter times in ".$opts->{timed}." minutes.".$gamecounter/$opts->{timed} . " per minute\n" ;
+    print "\n$gamecounter times in ".$opts->{timed}." minutes. ".$gamecounter/$opts->{timed} . " per minute\n" ;
 
 } else {
     if ( $opts->{server} || $opts->{quiet} ) {

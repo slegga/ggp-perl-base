@@ -179,6 +179,10 @@ sub do_and {
                 push( @uniqinputs, $cv );
             }
         }
+        # my @variablekeys = keys %{ $self->{variable} };
+        # my ($com,$inp) = compare_variablenames(\@variablekeys, $input->{variable});
+        # my @commonvars=@$com;
+        # my @uniqinputs=@$inp;
         if ( !@commonvars ) {    #make crossed product
             my $i = @variablekeys;
             while ( my ( $key, $value ) = each( %{ $input->{variable} } ) ) {
@@ -240,6 +244,29 @@ sub do_and {
     }
     $self->{true_if_empty} = 0;
     confess "first row table is undef " if ( exists $self->{table}->[0] && !defined $self->{table}->[0] );
+}
+
+=head2 compare_variablenames
+
+Takes orinal variablenamearray and incomming variablenamearray.
+return a common listarrayref and new listarrayref
+Used by do_and and RuleLine::get_facts
+
+=cut
+
+sub compare_variablenames {
+  my ($self, $orginal, $incomming)=@_;
+  my @commonvars = ();
+  my @uniqinputs = ();
+  my @cvkeys     = sort { $incomming->{$a} <=> $incomming->{$b} } keys %{ $incomming };
+  for my $cv (@cvkeys) {
+      if ( any { $_ eq $cv } @$orginal ) {
+          push( @commonvars, $cv );
+      } else {
+          push( @uniqinputs, $cv );
+      }
+  }
+  return (\@commonvars, \@uniqinputs);
 }
 
 =head2 do_or

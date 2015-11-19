@@ -86,15 +86,19 @@ sub optimize_rules {
       if (@factitem>1) {
         for my $i(0 .. $#varitem) {
             if ( none {$varitem[$i][0] eq $_}('not','or','distinct') ) {
-                push(@{$newrule->{criteria}}, splice(@varitem,$i,1));
+                push(@{$newrule->{criteria}}, splice(@varitem,$i,1)); #move plan do_and in front of criterias
                 last;
             }
         }
-        # $newrule->{fact}->{values} =[['1','2'], ['3','4']];
-        # @factrules
-            #return @tmpreturn;
         my $rule = GGP::Tools::RuleLine->new(facts=>\@factitem);
-        $newrule->{facts} = $rule->get_facts($world->{facts});
+        #TODO: extract variablenames for first criteriaitem
+        # get ['?x1','?y1','?player'] from $newrule->{criteria}->[0]
+        my $lookupvars;
+        if (exists $newrule->{criteria}->[0]) {
+          $lookupvars = dclone $newrule->{criteria}->[0];
+          shift @$lookupvars;
+        }
+        $newrule->{facts} = $rule->get_facts($world->{facts}, $lookupvars);
         my %varname = %{$newrule->{facts}->{variable}};
         push(@{$newrule->{criteria}}, [':facts',sort {$varname{$a} <=> $varname{$b}} keys %varname ]);
         push(@{$newrule->{criteria}}, @varitem);

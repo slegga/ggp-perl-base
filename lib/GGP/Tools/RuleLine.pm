@@ -45,20 +45,32 @@ has facts => (
 
 =head2 get_facts
 
+Calculates pre calculated facts for a rule.
 
+Return array if not
 
 =cut
 
 sub get_facts {
     my $self = shift;
     my $worldfacts = shift;
+    my $varlookups =shift;   # give lookupsvariables if any
     my $vars = GGP::Tools::Variables->new();
     for  my $fact(@{$self->facts}) {
         next if !$vars->get_bool();
         my $func     = shift(@$fact);
         $vars->do_and( $self->true_varstate($worldfacts , $func, $fact, $vars ) );
     }
-    return $vars->get();
+    if (! $varlookups) {
+      return $vars->get();
+    } else {
+      return $vars->get();
+      #TODO make a hash like {'val1;val2'=>[['val1','val2','val3'],['val1','val2','val4']]}
+      my $facts=$vars->get();
+      my ($table,$filter) = get_variable_n_filter($varlookups);
+      ...;
+      return
+    }
 }
 
 =head2 get_result_fromarule
