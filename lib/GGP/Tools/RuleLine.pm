@@ -68,6 +68,7 @@ sub get_facts {
       #TODO make a hash like {'val1;val2'=>[['val1','val2','val3'],['val1','val2','val4']]}
       my $facts=$vars->get();
       my ($table,$filter) = get_variable_n_filter($varlookups);
+      my ($commonvars,$tmp) = $vars->compare_variablenames(keys%{$table->{variable}},$worldfacts->{variable});
       ...;
       return
     }

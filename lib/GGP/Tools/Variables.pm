@@ -168,21 +168,21 @@ sub do_and {
 
         # compare variables. If none are equal then make x'ed product
         # Make new $self->{table}
-        my @commonvars = ();
-        my @uniqinputs = ();
-        my @cvkeys     = sort { $input->{variable}->{$a} <=> $input->{variable}->{$b} } keys %{ $input->{variable} };
-        my @variablekeys = keys %{ $self->{variable} };
-        for my $cv (@cvkeys) {
-            if ( any { $_ eq $cv } @variablekeys ) {
-                push( @commonvars, $cv );
-            } else {
-                push( @uniqinputs, $cv );
-            }
-        }
+        # my @commonvars = ();
+        # my @uniqinputs = ();
+        # my @cvkeys     = sort { $input->{variable}->{$a} <=> $input->{variable}->{$b} } keys %{ $input->{variable} };
         # my @variablekeys = keys %{ $self->{variable} };
-        # my ($com,$inp) = compare_variablenames(\@variablekeys, $input->{variable});
-        # my @commonvars=@$com;
-        # my @uniqinputs=@$inp;
+        # for my $cv (@cvkeys) {
+        #     if ( any { $_ eq $cv } @variablekeys ) {
+        #         push( @commonvars, $cv );
+        #     } else {
+        #         push( @uniqinputs, $cv );
+        #     }
+        # }
+        my @variablekeys = keys %{ $self->{variable} };
+        my ($com,$inp) = $self->compare_variablenames(\@variablekeys, $input->{variable});
+        my @commonvars=@$com;
+        my @uniqinputs=@$inp;
         if ( !@commonvars ) {    #make crossed product
             my $i = @variablekeys;
             while ( my ( $key, $value ) = each( %{ $input->{variable} } ) ) {
