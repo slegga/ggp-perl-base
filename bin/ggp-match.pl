@@ -199,7 +199,7 @@ if ( $opts->{info} ) {
         }
 
         %result = run_match( $world, $state, $opts, @agents );
-        print Dumper %result;
+#        print Dumper %result;
     }
 }
 

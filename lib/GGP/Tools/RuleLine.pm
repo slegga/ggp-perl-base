@@ -64,13 +64,42 @@ sub get_facts {
     if (! $varlookups) {
       return $vars->get();
     } else {
-      return $vars->get();
+      my $return;
+
+      # return $vars->get();
       #TODO make a hash like {'val1;val2'=>[['val1','val2','val3'],['val1','val2','val4']]}
       my $facts=$vars->get();
-      my ($table,$filter) = get_variable_n_filter($varlookups);
-      my ($commonvars,$tmp) = $vars->compare_variablenames(keys%{$table->{variable}},$worldfacts->{variable});
-      ...;
-      return
+      my ($table,$filter) = get_variable_n_filter($varlookups->[0]);
+#      warn  Dumper $varlookups;
+#      warn Dumper $facts; # ->{variable}
+      # GET VARCOMMON ID-PLACE
+      # my ($commonvars,$tmp) = $vars->compare_variablenames(keys%{$table->{variable}},$worldfacts->{variable});
+      # find lookup colid
+      my %varidxs=();
+      my $world = (keys %{$facts->{variable}});
+      $world--;
+#      warn $world;
+      for my $c(@{$varlookups->[0]}) {
+        for my $i(keys %{$facts->{variable}}) {
+#          warn "$c $i";
+          if ($c eq $i) {
+             $varidxs{$facts->{variable}->{$i}}=$i ; #turnaround
+          }
+        }
+      }
+      $return->{':colindex'}=\%varidxs;
+      $return->{variable} = $facts->{variable};
+      for my $row(@{$facts->{table}}) {
+        my $key = join(';',@{$row}[keys %varidxs]);
+        if (length $key==2) {
+          warn $key.'-'.join(',',keys %varidxs);
+          warn  Dumper $row;
+          die "gdfdfg";
+        }
+        push @{$return->{$key}},$row;
+      }
+#      warn Dumper $return;
+      return $return;
     }
 }
 
@@ -502,9 +531,38 @@ sub true_facts {
     confess '$state_hr is undef or not an hash. :' . ( $state_hr // 'undef' )
         if !defined $state_hr || ref $state_hr ne 'HASH';
     # Shall return {table=>[] variable=>[],true_if_empty=>0}
-    return {table=>$rule->{'facts'}->{table},
-            variable=>$rule->{'facts'}->{variable},
-            true_if_empty=>0};
+    if (exists $rule->{'facts'}->{table}) {
+      return {table=>$rule->{'facts'}->{table},
+              variable=>$rule->{'facts'}->{variable},
+              true_if_empty=>0};
+    } else {
+      my $return;
+      $return->{variable} = $rule->{'facts'}->{variable};
+      $return->{table}=[];
+      #die 'gghj'.join(':',@{$vars->{table}} ) if ! @{$rule->{'facts'}->{':colindex'}};
+      my @varcolids =        map{$vars->{variable}->{$_}}   map{$rule->{'facts'}->{':colindex'}->{$_}}
+                sort {$a <=>$b } keys %{$rule->{'facts'}->{':colindex'}};
+#      warn Dumper @varcolids;
+      for my $row (@{$vars->{table}}) {
+
+        my $key = join';', map{$row->[$_]} @varcolids;
+
+        if (exists $rule->{'facts'}->{$key}) {
+          # warn $key.'-'.join(',',@{$rule->{'facts'}->{':colindex'}});
+          # warn Dumper $row;
+          # warn Dumper $rule->{'facts'};
+          #
+          # die "gdff" ;
+         push @{$return->{table}}, @{$rule->{'facts'}->{$key}};
+        }
+      }
+#      if (keys %{$rule->{'facts'}->{':colindex'}}>1) {
+#        warn Dumper $rule->{'facts'};
+#        warn Dumper $return;
+#        die "øææ";
+#      }
+      return $return;
+    }
 }
 
 =head2 get_varstate_as_table
