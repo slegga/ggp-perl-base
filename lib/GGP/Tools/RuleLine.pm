@@ -542,25 +542,14 @@ sub true_facts {
       #die 'gghj'.join(':',@{$vars->{table}} ) if ! @{$rule->{'facts'}->{':colindex'}};
       my @varcolids =        map{$vars->{variable}->{$_}}   map{$rule->{'facts'}->{':colindex'}->{$_}}
                 sort {$a <=>$b } keys %{$rule->{'facts'}->{':colindex'}};
-#      warn Dumper @varcolids;
       for my $row (@{$vars->{table}}) {
 
         my $key = join';', map{$row->[$_]} @varcolids;
 
         if (exists $rule->{'facts'}->{$key}) {
-          # warn $key.'-'.join(',',@{$rule->{'facts'}->{':colindex'}});
-          # warn Dumper $row;
-          # warn Dumper $rule->{'facts'};
-          #
-          # die "gdff" ;
          push @{$return->{table}}, @{$rule->{'facts'}->{$key}};
         }
       }
-#      if (keys %{$rule->{'facts'}->{':colindex'}}>1) {
-#        warn Dumper $rule->{'facts'};
-#        warn Dumper $return;
-#        die "øææ";
-#      }
       return $return;
     }
 }
