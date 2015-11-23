@@ -131,7 +131,9 @@ sub get_result_fromarule {
             }
             $vars->do_and( $self->true( $state_hr, $criteria->[0], $vars ) );
         } elsif ( $func eq ':facts') {
-            $vars->do_and($self->true_facts($state_hr, $self->rule, $criteria->[0], $vars));
+            # Breakes a pathern thar $vars modifies $vars.
+            $vars = $self->true_facts($state_hr, $self->rule, $criteria->[0], $vars);
+            ...;
         } elsif ( $func eq 'does' ) {
             $vars->do_and( $self->does( $roles, $moves, $criteria ) );
         } elsif ( $func eq 'distinct' ) {
@@ -531,26 +533,43 @@ sub true_facts {
     confess '$state_hr is undef or not an hash. :' . ( $state_hr // 'undef' )
         if !defined $state_hr || ref $state_hr ne 'HASH';
     # Shall return {table=>[] variable=>[],true_if_empty=>0}
-    if (exists $rule->{'facts'}->{table}) {
-      return {table=>$rule->{'facts'}->{table},
+
+    my $return;
+
+    if (exists $rule->{'facts'}->{table}) { # table means array not hash-index
+      if ($vars->{true_if_empty}) {
+        $return = {table=>$rule->{'facts'}->{table},
               variable=>$rule->{'facts'}->{variable},
               true_if_empty=>0};
-    } else {
-      my $return;
+      } else { # no index and not first
+        ...;
+      }
+
+    } else { #index and not first
+      $return = $vars;
+      #TODO Do merge. change facts to hashes of hashes
+      # $rule->{'facts'}->{commonkeys}->{unique vars}
+      # merge with $vars
       $return->{variable} = $rule->{'facts'}->{variable};
       $return->{table}=[];
-      #die 'gghj'.join(':',@{$vars->{table}} ) if ! @{$rule->{'facts'}->{':colindex'}};
+
       my @varcolids =        map{$vars->{variable}->{$_}}   map{$rule->{'facts'}->{':colindex'}->{$_}}
                 sort {$a <=>$b } keys %{$rule->{'facts'}->{':colindex'}};
-      for my $row (@{$vars->{table}}) {
 
+
+      for my $row (@{$vars->{table}}) {
         my $key = join';', map{$row->[$_]} @varcolids;
 
         if (exists $rule->{'facts'}->{$key}) {
-         push @{$return->{table}}, @{$rule->{'facts'}->{$key}};
+          push @{$return->{table}}, @{$rule->{'facts'}->{$key}};
+        } else {
+          #splice remove row
+          ...;
         }
       }
-      return $return;
+
+    }
+    return $return;
     }
 }
 
