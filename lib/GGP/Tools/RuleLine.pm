@@ -554,8 +554,9 @@ sub true_facts {
       my $i = _max (values %{$return->{variable}});
 #      warn "\$i=$i";
       for my $factcol( sort_by { $rule->{'facts'}->{variable}->{$_} } keys %{$rule->{'facts'}->{variable}}) {
-          next if exists $return->{variable}->{$factcol};
           $i++;
+          next if exists $return->{variable}->{$factcol};
+
           $return->{variable}->{$factcol}=$i;
       }
       $return->{table}=[];
@@ -709,6 +710,11 @@ sub get_effect {
             #            warn "new:".scalar @return2;
             @return = @return2;
         }
+        #die Dumper @return;
+        #if ($return[0][0] eq 'line') {
+        #    warn Dumper $variables;
+        #    die;
+        #}
         return @return;
     } else {
         return $effect;
