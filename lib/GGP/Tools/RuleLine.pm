@@ -3,7 +3,7 @@ package GGP::Tools::RuleLine;
 use Data::Dumper;
 use Data::Compare;
 use Carp;
-use List::MoreUtils qw(any uniq first_index none);
+use List::MoreUtils qw(any uniq first_index none sort_by);
 use GGP::Tools::Variables;
 use GGP::Tools::Utils qw( hashify extract_variables data_to_gdl logf);
 use Storable qw(dclone);
@@ -99,6 +99,7 @@ sub get_facts {
         push @{$return->{$key}},$row;
       }
 #      warn Dumper $return;
+#      die;
       return $return;
     }
 }
@@ -133,7 +134,6 @@ sub get_result_fromarule {
         } elsif ( $func eq ':facts') {
             # Breakes a pathern thar $vars modifies $vars.
             $vars = $self->true_facts($state_hr, $self->rule, $criteria->[0], $vars);
-            ...;
         } elsif ( $func eq 'does' ) {
             $vars->do_and( $self->does( $roles, $moves, $criteria ) );
         } elsif ( $func eq 'distinct' ) {
@@ -534,23 +534,30 @@ sub true_facts {
         if !defined $state_hr || ref $state_hr ne 'HASH';
     # Shall return {table=>[] variable=>[],true_if_empty=>0}
 
-    my $return;
+    my $return = GGP::Tools::Variables->new();
 
     if (exists $rule->{'facts'}->{table}) { # table means array not hash-index
       if ($vars->{true_if_empty}) {
-        $return = {table=>$rule->{'facts'}->{table},
-              variable=>$rule->{'facts'}->{variable},
-              true_if_empty=>0};
+        $return->{table} = $rule->{'facts'}->{table};
+        $return->{variable} = $rule->{'facts'}->{variable};
+        $return->{true_if_empty} = 0;
       } else { # no index and not first
         ...;
       }
 
     } else { #index and not first
-      $return = $vars;
       #TODO Do merge. change facts to hashes of hashes
       # $rule->{'facts'}->{commonkeys}->{unique vars}
       # merge with $vars
-      $return->{variable} = $rule->{'facts'}->{variable};
+      $return->{true_if_empty} = 0;
+      $return->{variable} = $vars->{variable};
+      my $i = _max (values %{$return->{variable}});
+#      warn "\$i=$i";
+      for my $factcol( sort_by { $rule->{'facts'}->{variable}->{$_} } keys %{$rule->{'facts'}->{variable}}) {
+          next if exists $return->{variable}->{$factcol};
+          $i++;
+          $return->{variable}->{$factcol}=$i;
+      }
       $return->{table}=[];
 
       my @varcolids =        map{$vars->{variable}->{$_}}   map{$rule->{'facts'}->{':colindex'}->{$_}}
@@ -559,18 +566,21 @@ sub true_facts {
 
       for my $row (@{$vars->{table}}) {
         my $key = join';', map{$row->[$_]} @varcolids;
-
+#        warn $key;
         if (exists $rule->{'facts'}->{$key}) {
-          push @{$return->{table}}, @{$rule->{'facts'}->{$key}};
+            for my $subretrow(@{$rule->{'facts'}->{$key}}) {
+                my $returnrow = dclone $row;
+                push @$returnrow, @$subretrow;
+                push @{$return->{table}}, $returnrow;
+            }
         } else {
-          #splice remove row
-          ...;
+          #do nothing
         }
       }
-
+#      warn Dumper $return;
+#      die;
     }
     return $return;
-    }
 }
 
 =head2 get_varstate_as_table
@@ -815,6 +825,14 @@ sub does {
     }
     return $return;
 
+}
+
+sub _max {
+    my ($max, @vars) = @_;
+    for (@vars) {
+        $max = $_ if $_ > $max;
+    }
+    return $max;
 }
 
 
