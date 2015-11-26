@@ -374,13 +374,14 @@ sub _getwords {
     my $command = shift(@new) if $new[0] =~ /\b(?:next|init|input)\b/;
     if ( defined $command && $command eq 'next' ) {
         my $effect = $line;
-        if ( $line =~ /\s*\(\s*\<\=\s*\(next\s*\(?([^\)]+)/ ) {
+        if ( $line =~ /\s*\(\s*\<\=\s*\(\s*next\s*\(?([^\)]+)/ ) {
             $effect = $1;
             my @new = ( $effect =~ /(?:[\(\=\s])\s*([a-z\+][\w\+]*)/g );
             for my $i ( 0 .. $#new ) {
                 $known->{ $new[$i] } = 0;
             }
         } else {
+            warn;
             warn $line;
             confess "Cant handle";
         }

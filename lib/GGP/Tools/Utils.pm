@@ -229,7 +229,7 @@ sub _recstringify {
             $return .= $key . ' ';
             if ( !defined $value ) {
                 warn Dumper $data;
-                confess "NULL2";
+                confess "NULL2 '".($key//'__UNDEF__')."'";
             }
 
             $return .= _recstringify($value) . ' ';

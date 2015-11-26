@@ -44,7 +44,7 @@ This script is planned to use as player on ggp-sites.
 
  # shell 2
  cd /home/stein/git/ggp-base
- ./gradlew client
+ ./gradlew player
 
  # shell 3
  MOJO_INACTIVITY_TIMEOUT=180 morbo bin/ggp-client.pl
@@ -60,6 +60,8 @@ Make another Mojolicious script with ua to explore ggp-clients
 #my $agent = GGP::Agents::Random->new();
 my $agent = GGP::Agents::AlphaBetaM->new();
 my ( $world, $state, $goals );
+my $statem;
+my @roles;
 my $oldout = '';
 logdest('file');
 my $logfile = '$FindBin::Bin/../log/ggp-client.log';
@@ -120,12 +122,12 @@ any '/' => sub {
 
         # $world = readkifraw($request->[3]);
         logf( data_to_gdl($world) );
+        $statem = GGP::Tools::StateMachine->new($world, \@roles);
         $state = get_init_state($world);
         init_state_analyze( $world, $state );    #modifies $world
         $gdldata = $agent->start( $request->[1], $request->[2], $world, $request->[4], $request->[5] );
         logf('State:');
         logf( data_to_gdl($state) );
-
         #         if (defined $world->{constants}) {
         #             $state = dclone($world->{constants});
         #         }
@@ -151,7 +153,7 @@ any '/' => sub {
                 push @$moves2, gdl_to_data($move);
             }
             print Dumper $moves2;
-            ( $state, $goals ) = process_move( $world, $state, $moves2 );    #['mark'=>[1,1],'noop']
+            ( $state, $goals ) = $statem->process_move( $world, $state, $moves2 );    #['mark'=>[1,1],'noop']
 
         } else {
             $moves2 = $moves;
