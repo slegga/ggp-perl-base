@@ -394,7 +394,7 @@ sub _getwords {
 
         my $offset = 1;
 
-        if ( $line !~ /\(\<\=/ ) {
+        if ( $line !~ /\(\s*\<\=/ ) {
 
             # line is a fact
             for my $i ( 0 .. $#new ) {

@@ -1,33 +1,24 @@
 $files = {
            '_</home/t527081/git/ggp-perl-base//lib/GGP/Tools/Parser.pm' => [
                                                                              {
-                                                                               'value' => '1',
-                                                                               'text' => '                ( $known, $ok ) = _getwords( $line, $known );
-',
                                                                                'fname' => '/home/t527081/git/ggp-perl-base//lib/GGP/Tools/Parser.pm',
-                                                                               'expr' => undef,
-                                                                               'type' => 'user',
-                                                                               'line' => '220'
-                                                                             },
-                                                                             {
                                                                                'line' => 83,
-                                                                               'type' => 'user',
-                                                                               'fname' => '/home/t527081/git/ggp-perl-base//lib/GGP/Tools/Parser.pm',
-                                                                               'expr' => undef,
                                                                                'value' => '1',
                                                                                'text' => '    my $gdlrule_hr = gdl_order_and_group_lines(@gdllines);
-'
+',
+                                                                               'expr' => undef,
+                                                                               'type' => 'user'
                                                                              }
                                                                            ],
            '_<t/ggp-gdl-parser-order.t' => [
                                              {
-                                               'line' => 106,
-                                               'type' => 'user',
-                                               'fname' => 't/ggp-gdl-parser-order.t',
                                                'expr' => undef,
-                                               'value' => '1',
                                                'text' => 'my $world = parse_gdl( $gdl, {} );
-'
+',
+                                               'type' => 'user',
+                                               'line' => 106,
+                                               'fname' => 't/ggp-gdl-parser-order.t',
+                                               'value' => '1'
                                              }
                                            ]
          };
@@ -37,12 +28,12 @@ $expr_list = [
                  'depth' => -1
                },
                {
-                 'depth' => -1,
-                 'expr' => '$return'
+                 'expr' => '$return',
+                 'depth' => -1
                },
                {
-                 'expr' => '$known',
-                 'depth' => -1
+                 'depth' => -1,
+                 'expr' => '$known'
                },
                {
                  'depth' => -1,
