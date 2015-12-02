@@ -193,7 +193,7 @@ sub gdl_order_and_group_lines {
             push( @mostlastlines, $line );
         } elsif ( $line =~ /\b(?:next|init|goal|terminal)\b/ ) {     #(<= (input ?player (move
             push( @mostlastlines, $line );
-        } elsif ( $line =~ /^\s*\(\<\=\s*/ ) {
+        } elsif ( $line =~ /^\s*\(\s*\<\=\s*/ ) {
             push( @lastlines, $line );
         } else {                                                     # the rest should be constants
             ( $known, $ok ) = _getwords( $line, $known );
@@ -217,6 +217,7 @@ sub gdl_order_and_group_lines {
             } else {
 
                 # FIXME ERROR add lines dependant on init words/functions
+                # have own list of facts or own ist of init
                 ( $known, $ok ) = _getwords( $line, $known );
                 if ($ok) {
                     push( @{ $return->{facts} }, $line );
