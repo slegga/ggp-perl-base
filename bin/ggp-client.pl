@@ -64,7 +64,7 @@ my $statem;
 my @roles;
 my $oldout = '';
 logdest('file');
-my $logfile = '$FindBin::Bin/../log/ggp-client.log';
+my $logfile = "$FindBin::Bin/../log/ggp-client.log";
 if ( -f $logfile ) {
     unlink($logfile);
 }
@@ -123,8 +123,8 @@ any '/' => sub {
         # $world = readkifraw($request->[3]);
         logf( data_to_gdl($world) );
         $statem = GGP::Tools::StateMachine->new($world, \@roles);
-        $state = get_init_state($world);
-        init_state_analyze( $world, $state );    #modifies $world
+        $state = $statem->get_init_state($world);
+        $statem->init_state_analyze( $world, $state );    #modifies $world
         $gdldata = $agent->start( $request->[1], $request->[2], $world, $request->[4], $request->[5] );
         logf('State:');
         logf( data_to_gdl($state) );

@@ -67,6 +67,7 @@ Set log destination
 =head2 logfile
 
 Set log file name
+Or read log file name if no parameters
 
 =cut
 
