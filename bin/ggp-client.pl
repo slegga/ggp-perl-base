@@ -39,15 +39,16 @@ This script is planned to use as player on ggp-sites.
 =head2 TEST2
 
  # shell 1
- cd /home/stein/git/ggp-base
+ cd ~/git/ggp-base
  ./gradlew server
 
  # shell 2
- cd /home/stein/git/ggp-base
+ cd ~/git/ggp-base
  ./gradlew player
 
  # shell 3
- MOJO_INACTIVITY_TIMEOUT=180 morbo bin/ggp-client.pl
+ cd ~/git/ggp-perl-base
+ MOJO_INACTIVITY_TIMEOUT=180 morbo bin/ggp-client.pl 2>&1|grep -v debug|grep -v INFO
 
 
 =head2 PLAN
@@ -79,11 +80,6 @@ sub startup {
     $c->types->type( txt => 'text/acl; charset=utf-8' );
 }
 
-=head2 splitt_gdl
-
-
-
-=cut
 
 # helper
 
@@ -109,7 +105,8 @@ any '/' => sub {
     if ( uc $request->[0] eq 'INFO' ) {
         $gdldata = $agent->info();
     } elsif ( uc $request->[0] eq 'START' ) {
-        ( $world, $state, $goals ) = ( (), (), () );
+        ( $world, $state, $goals, $statem) = ( [], [], [], [] );
+        logf($c->req->content->asset->{content});
         print Dumper $request->[2];
         $request->[3] = substr( $request->[3], 1, length( $request->[3] ) - 2 );
         print Dumper $request->[3];
@@ -137,10 +134,12 @@ any '/' => sub {
         #         @$state{keys %$other} = values %$other;
 
     } elsif ( uc $request->[0] eq 'PLAY' ) {
+        confess "No World!" if !defined $world;
 
         #0=command 1=id 2+=player moves
         my $moves = $request->[2];
         print Dumper $moves;
+        logf($c->req->content->asset->{content});
 
         #        shift(@$moves);
         #        shift(@$moves);
@@ -152,8 +151,8 @@ any '/' => sub {
             for my $move (@$moves) {
                 push @$moves2, gdl_to_data($move);
             }
-            print Dumper $moves2;
-            ( $state, $goals ) = $statem->process_move( $world, $state, $moves2 );    #['mark'=>[1,1],'noop']
+            print Dumper $moves2, $state->{legal}, $state->{control};
+            $state = $statem->process_move( $world, $state, $moves2 );    #['mark'=>[1,1],'noop']
 
         } else {
             $moves2 = $moves;
