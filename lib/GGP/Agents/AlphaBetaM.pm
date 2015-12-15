@@ -289,6 +289,7 @@ Stop before finished
 sub abort {
     my ( $self, $id ) = @_;
     $self->{'status'} = 'available';
+    # undef($self);
     $self->loginfo('END');
     return 'done';
 }
@@ -303,6 +304,7 @@ sub stop {
     my ( $self, $id, $move ) = @_;
     $self->{'status'} = 'available';
     $self->loginfo('END');
+    # undef($self);
     return 'done';
 }
 

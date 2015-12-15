@@ -105,9 +105,9 @@ any '/' => sub {
     if ( uc $request->[0] eq 'INFO' ) {
         $gdldata = $agent->info();
     } elsif ( uc $request->[0] eq 'START' ) {
-        ( $world, $state, $goals, $statem) = ( [], [], [], [] );
+        ( $world, $state, $goals, $statem) = ( [], {}, [], [] );
         logf($c->req->content->asset->{content});
-        print Dumper $request->[2];
+        # print Dumper $request->[2];
         $request->[3] = substr( $request->[3], 1, length( $request->[3] ) - 2 );
         print Dumper $request->[3];
         $world = parse_gdl( $request->[3], {} );
