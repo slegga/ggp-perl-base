@@ -30,6 +30,11 @@ ggp-client.pl
 
 This script is planned to use as player on ggp-sites.
 
+=head2 TEST1
+
+prove -l t/41-ggp-mojo.t 2>&1|bin/htmlremover.pl
+
+
 =head2 TEST
 
 
