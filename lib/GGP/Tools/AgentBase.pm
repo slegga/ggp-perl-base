@@ -96,12 +96,12 @@ sub init {
     $self->{expire_stimer} = shift || 30;
     $self->{expire_ptimer} = shift || 30;
     $self->{maxiterations} = shift;
-    if ( !defined $self->{ggpworld} ) {
+#    if ( !defined $self->{ggpworld} ) {
         $self->{ggpworld} = $winput;
 
         #     } elsif( ! Compare($ggpworld, $winput) ) {
         #         confess"ERROR: Try to change the \$world!";
-    }
+#    }
     $self->{goalheuristic} = $self->{ggpworld}->{analyze}->{goalheuristic};
     $self->{goalheuristicdefault} =
         100 / ( $self->{ggpworld}->{analyze}->{noofroles} > 1 ? $self->{ggpworld}->{analyze}->{noofroles} : 51 );
