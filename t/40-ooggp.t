@@ -1,20 +1,26 @@
-use SH::ScriptTest qw(no_plan);#tests=>4;
+
 #FIXME
 #Loop over all agents
+use Mojo::Base -strict;
+use Test::More 'no_plan';
+use Test::Script;
+use Mojo::File 'path';
 use Cwd 'abs_path';
-BEGIN {
-    $homedir = abs_path($0);
-    $homedir =~s|/[^/\\]+/[^/\\]+$||;
-}
-my $test=SH::ScriptTest->new($homedir,'dev',@ARGV);#projecthome,developmentflag,testsno to execute
+push(@INC,'../utillities-perl/lib');
+#my $test=SH::ScriptTest->new($homedir,'dev',@ARGV);#projecthome,developmentflag,testsno to execute
+my $bin = path('bin');
 
-opendir(my $dh, $homedir.'/lib/GGP/Agents') || die "can't opendir $some_dir: $!";
+opendir(my $dh, path("$bin","..",'lib','GGP','Agents')) || die "can't opendir: $!";
 for my $agent(map { $_ =~ s/\.pm$//;$_} grep {$_ =~/\.pm$/} readdir($dh) ){
-    $test->testscript($homedir."/bin/ggp-match.pl -t1 -a $agent,$agent");
+    script_runs($bin->child('ggp-match.pl')->to_string," -t1 -a $agent,$agent","$agent is working");
 }
-$test->testscript($homedir.'/bin/ggp-report.pl');
-# $test->testscript($homedir.'/bin/ggp-match.pl');
-$test->testscript($homedir.'/bin/ggp-con-ua.pl --help');
-$test->testscript($homedir.'/bin/ggp-series.pl --help');
-$test->testscript($homedir.'/bin/ggp-series.pl -r 2pffa,ticTacToe -a MaxMaxH,AlphaBeta -t5');
+my $script = path('script');
+for my $s($script->list->each) {
+	script_compiles($s,"$s compiles");
+}
+for my $s($bin->list->each) {
+	script_compiles($s,"$s compiles");
+}
+script_runs($bin->child('ggp-series.pl'),'--help',"help runs");
+scrip_runs($bin->child('/bin/ggp-series.pl'),' -r 2pffa,ticTacToe -a MaxMaxH,AlphaBeta -t5',"ttt mmh runs");
 done_testing;
