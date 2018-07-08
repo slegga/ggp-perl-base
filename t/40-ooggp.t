@@ -16,11 +16,11 @@ for my $agent(map { $_ =~ s/\.pm$//;$_} grep {$_ =~/\.pm$/} readdir($dh) ){
 }
 my $script = path('script');
 for my $s($script->list->each) {
-	script_compiles($s,"$s compiles");
+	script_compiles("$s","$s compiles");
 }
 for my $s($bin->list->each) {
-	script_compiles($s,"$s compiles");
+	script_compiles("$s","$s compiles");
 }
-script_runs($bin->child('ggp-series.pl'),'--help',"help runs");
-scrip_runs($bin->child('/bin/ggp-series.pl'),' -r 2pffa,ticTacToe -a MaxMaxH,AlphaBeta -t5',"ttt mmh runs");
+script_runs($bin->child('ggp-series.pl')->to_string, '--help',"help runs");
+script_runs($bin->child('ggp-series.pl')->to_string, ' -r 2pffa,ticTacToe -a MaxMaxH,AlphaBeta -t5',"ttt mmh runs");
 done_testing;

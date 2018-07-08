@@ -38,7 +38,8 @@ use SH::Script qw( options_and_usage );
 use GGP::Tools::Parser qw ( parse_gdl_file);
 use GGP::Tools::StateMachine;
 use GGP::Tools::Utils qw (logdest logfile);
-use SH::ResultSet qw(rs_convert_from_hashes rs_pretty_format_table rs_aggregate);
+# use SH::ResultSet qw(rs_convert_from_hashes rs_pretty_format_table rs_aggregate);
+use SH::PrettyPrint;
 
 my @ARGV_COPY = @ARGV;
 my ( $opts, $usage ) = options_and_usage(
@@ -74,9 +75,9 @@ if ( $opts->{info} ) {
             push( @output, $tmp );
 
         }
-        my $rs = rs_convert_from_hashes( \@output, [ 'rule', 'noofroles', 'firstmoves', 'goalheuristic' ] );
-        print rs_pretty_format_table($rs);
-
+#        my $rs = rs_convert_from_hashes( \@output, [ 'rule', 'noofroles', 'firstmoves', 'goalheuristic' ] );
+#        print rs_pretty_format_table($rs);
+		SH::PrettyPrint::print_hashes(\@output);
     }
 } else {
     if ( $opts->{server} || $opts->{quiet} ) {
@@ -87,10 +88,12 @@ if ( $opts->{info} ) {
         }
         logfile($logfile);
     }
-    my @rules = split( /\,/, $opts->{rulefiles} );
+    my @rules;
+	@rules = split( /\,/, $opts->{rulefiles} ) if exists $opts->{rulefiles} && defined $opts->{rulefiles};
 
     my %result;
-    my @agents = split( /\,/, $opts->{agents} );
+    my @agents;
+    @agents = split( /\,/, $opts->{agents} ) if exists $opts->{agents} && defined $opts->{agents};
     my @matches = @{ cartesian_product( \@agents, \@agents, \@rules ) };
     my @results = ();
     for my $match (@matches) {
@@ -122,14 +125,14 @@ if ( $opts->{info} ) {
 
     }
     my @colorder = ( 'rule', @agents );
-    my $rs = rs_convert_from_hashes( \@results, \@colorder );
-    print rs_pretty_format_table($rs);
-    my %agrcol;
-    for my $role (@agents) {
-        $agrcol{$role} = 'sum';
-    }
-    my $aggr_rs = rs_aggregate( $rs, { aggregation => \%agrcol } );
-    print rs_pretty_format_table( $aggr_rs, { null => ' ' } );
+#    my $rs = rs_convert_from_hashes( \@results, \@colorder );
+    SH::PrettyPrint::print_hashes(\@results);
+#    my %agrcol;
+#    for my $role (@agents) {
+#        $agrcol{$role} = 'sum';
+#    }
+#    my $aggr_rs = rs_aggregate( $rs, { aggregation => \%agrcol } );
+#    print rs_pretty_format_table( $aggr_rs, { null => ' ' } );
 }
 
 sub cartesian_product {

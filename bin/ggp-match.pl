@@ -26,14 +26,17 @@ my @movehist;
 
 use FindBin;
 use lib "$FindBin::Bin/../lib";
+use lib "$FindBin::Bin/../../utillities-perl/lib";
 use GGP::Tools::Match qw ( run_match list_rules list_agents);
 use SH::Script qw( options_and_usage );
 use GGP::Tools::Parser qw ( parse_gdl_file);
 use GGP::Tools::RuleOptimizer qw (optimize_rules);
 use GGP::Tools::StateMachine;# qw ( get_init_state  init_state_analyze);
 use GGP::Tools::Utils qw (logdest logfile);
-use SH::ResultSet
-  qw(rs_convert_from_hashes rs_pretty_format_table rs_aggregate);
+use SH::PrettyPrint;
+#  qw(rs_convert_from_hashes rs_pretty_format_table rs_aggregate);
+#use SH::PrettyPrint 'print_arrayofarrays';
+#use Data::printer;
 my $homedir = $FindBin::Bin."/..";
 my @ARGV_COPY = @ARGV;
 my ( $opts, $usage ) = options_and_usage(
@@ -72,9 +75,10 @@ if ( $opts->{info} ) {
             push( @output, $tmp );
 
         }
-        my $rs = rs_convert_from_hashes( \@output,
-            [ 'rule', 'noofroles', 'firstmoves', 'goalheuristic' ] );
-        print rs_pretty_format_table($rs);
+#        my $rs = rs_convert_from_hashes( \@output,
+#            [ 'rule', 'noofroles', 'firstmoves', 'goalheuristic' ] );
+#        print rs_pretty_format_table($rs);
+		SH::PrettyPrint::print_hashes \@output;
 
     }
 } elsif ( $opts->{timed} ) {
