@@ -6,7 +6,7 @@ use Test::More 'no_plan';
 use Test::Script;
 use Mojo::File 'path';
 use Cwd 'abs_path';
-push(@INC,'../utillities-perl/lib');
+push(@INC,'../utilities-perl/lib');
 #my $test=SH::ScriptTest->new($homedir,'dev',@ARGV);#projecthome,developmentflag,testsno to execute
 my $bin = path('bin');
 

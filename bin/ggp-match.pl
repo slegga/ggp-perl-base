@@ -26,7 +26,7 @@ my @movehist;
 
 use FindBin;
 use lib "$FindBin::Bin/../lib";
-use lib "$FindBin::Bin/../../utillities-perl/lib";
+use lib "$FindBin::Bin/../../utilities-perl/lib";
 use GGP::Tools::Match qw ( run_match list_rules list_agents);
 use SH::Script qw( options_and_usage );
 use GGP::Tools::Parser qw ( parse_gdl_file);
