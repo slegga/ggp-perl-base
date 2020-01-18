@@ -93,7 +93,7 @@ Get number of participants
 sub get_number_of_participants {
     my $opts = shift;
     my $rulefile = $opts->{rulefile};
-    my $gdlfile = "$homedir/Dropbox/data/kif/".$rulefile.".kif";
+    my $gdlfile = "$homedir/googledrive/data/kif/".$rulefile.".kif";
     my $textrules= read_file($gdlfile);
     my $world = parse_gdl($textrules, $opts);
     return @{$world->{facts}->{role}};
