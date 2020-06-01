@@ -3,3 +3,4 @@ filelist.txt
 *.log
 log/*
 *.ptkdb
+.prove

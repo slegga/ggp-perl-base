@@ -61,7 +61,6 @@ option    'verbose!',     'Print log info';
 option    'watch=s',      'Comma separated list of state keys to watch';
 option    'iterations=i', 'Max states calculated';
 
-__PACKAGE__->new->with_options->main if ! caller;
 
 sub main {
 	my $self = shift;
@@ -157,6 +156,9 @@ my $last = pop @_;
     }
     cartesian_product(@_);
 }
+
+__PACKAGE__->new->main;
+
 
 =head1 AUTHOR
 

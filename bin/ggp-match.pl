@@ -51,14 +51,13 @@ option 'server',       'Print data to file' ;
 option 'iterations=i', 'Max states calculated' ;
 option 'timed=i',        'Count how many games in n minutes.', ;
 
-__PACKAGE__->new->with_options->main if ! caller;
 sub main {
     my $self = shift;
     my $opts = {};
     for my $ar(qw/info rulefile agents duplex quiet verbose watch watchrule server iterations timed/) {
         $opts->{$ar} = $self->$ar;
     }
-    
+
     if ( $self->info ) {
         print "\nrules:\n " . join( "\n ", list_rules() );
         print "\n\n";
@@ -214,6 +213,9 @@ sub main {
 sub _order_match {
 
 }
+
+__PACKAGE__->new->main;
+
 
 =head1 AUTHOR
 
