@@ -12,7 +12,7 @@ use Mojo::UserAgent;
 
 =head1 NAME
 
-ggp-con-ua.pl 
+ggp-con-ua.pl
 
 =head1 DESCRIPTION
 
@@ -23,7 +23,7 @@ Not complete.
 =head1 USAGE
 
 bin/ggp-client.pl
-/home/stein/git/ggp-base$ ./gradlew player
+~/git/ggp-base$ ./gradlew player
 bin/ggp-con-ua.pl
 
 =cut
