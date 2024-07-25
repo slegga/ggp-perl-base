@@ -8,7 +8,7 @@ use GGP::Tools::Variables;
 use GGP::Tools::Utils qw( hashify extract_variables data_to_gdl logf);
 use Storable qw(dclone);
 use Hash::Merge qw( merge );
-use Moo;
+use Mojo::Base -base,-strict,-signatures;
 
 =encoding utf8
 
@@ -19,31 +19,25 @@ GGP::Tools::RuleLine - Handle one rule
 =head1 SYNOPSIS
 
     use GGP::Tools::RuleLine;
-    $state = GGP::Tools::RuleLine->new(rule=>{effect=>'effect',criteria=>...});
+    $state = GGP::Tools::RuleLine->new(rule=>{effect=>'effect',criteria=>{active=>'player2'}});
 
 =head1 DESCRIPTION
 
-API for the Agents and the match scripts/servers.
-
-Rest of methods put into RuleLine
+Handle a rule line. Uses facts to calculate effects.
 
 =head1 ATTRIBUTES
 
 =cut
 
-has rule => (
-    is => 'ro',
-    isa =>sub{confess("Wrong rule") if !ref $_[0] eq 'HASH'},
-);
+has 'rule';
 
-has facts => (
-    is => 'ro',
-    isa =>sub{confess("Wrong facts") if !ref $_[0] eq 'ARRAY'},
-);
+has 'facts';
 
 =head1 METHODS
 
 =head2 get_facts
+
+    my $facts = $self->get_facts({player=>'white'},{...} );
 
 Calculates pre calculated facts for a rule.
 
@@ -51,10 +45,7 @@ Return array if not
 
 =cut
 
-sub get_facts {
-    my $self = shift;
-    my $worldfacts = shift;
-    my $varlookups =shift;   # give lookupsvariables if any
+sub get_facts($self, $worldfacts, $varlookups) {   # give lookupsvariables if any
     my $vars = GGP::Tools::Variables->new();
     for  my $fact(@{$self->facts}) {
         next if !$vars->get_bool();
@@ -66,19 +57,15 @@ sub get_facts {
     } else {
       my $return;
 
-      # return $vars->get();
-      #TODO make a hash like {'val1;val2'=>[['val1','val2','val3'],['val1','val2','val4']]}
-      my $facts=$vars->get();
+      #make a hash like {'val1;val2'=>[['val1','val2','val3'],['val1','val2','val4']]}
+      my $facts = $vars->get();
       my ($table,$filter) = get_variable_n_filter($varlookups->[0]);
-#      warn  Dumper $varlookups;
-#      warn Dumper $facts; # ->{variable}
       # GET VARCOMMON ID-PLACE
       # my ($commonvars,$tmp) = $vars->compare_variablenames(keys%{$table->{variable}},$worldfacts->{variable});
       # find lookup colid
-      my %varidxs=();
+      my %varidxs = ();
       my $world = (keys %{$facts->{variable}});
       $world--;
-#      warn $world;
       for my $c(@{$varlookups->[0]}) {
         for my $i(keys %{$facts->{variable}}) {
 #          warn "$c $i";
@@ -91,7 +78,7 @@ sub get_facts {
       $return->{variable} = $facts->{variable};
       for my $row(@{$facts->{table}}) {
         my $key = join(';',@{$row}[keys %varidxs]);
-        if (length $key==2) {
+        if (length $key == 2) {
           warn $key.'-'.join(',',keys %varidxs);
           warn  Dumper $row;
           die "gdfdfg";
@@ -111,12 +98,7 @@ Do one and one rule
 =cut
 
 
-sub get_result_fromarule {
-    my $self = shift;
-
-    my $roles    = shift;
-    my $state_hr = shift;
-    my $moves    = shift;
+sub get_result_fromarule($self, $roles, $state_hr, $moves) {
     confess 'Input should not be undef' if any { !defined $_ } ( $roles, $state_hr, $moves );
     my $vars = GGP::Tools::Variables->new();
 
@@ -133,7 +115,7 @@ sub get_result_fromarule {
             $vars->do_and( $self->true( $state_hr, $criteria->[0], $vars ) );
         } elsif ( $func eq ':facts') {
             # Breakes a pathern thar $vars modifies $vars.
-            $vars = $self->true_facts($state_hr, $self->rule, $criteria->[0], $vars);
+            $vars = $self->_true_facts($state_hr, $self->rule, $criteria->[0], $vars);
         } elsif ( $func eq 'does' ) {
             $vars->do_and( $self->does( $roles, $moves, $criteria ) );
         } elsif ( $func eq 'distinct' ) {
@@ -156,12 +138,6 @@ sub get_result_fromarule {
     }
     my @return = $self->get_effect( $self->rule->{effect}, $vars->get() );
 
-    #     #remove 1 array level
-    #     for my $tmp(@return) {
-    #         #... #debug and figure out
-    #
-    #  #       $tmp=$tmp->[0];
-    #     }
     return @return;
 
 }
@@ -169,16 +145,14 @@ sub get_result_fromarule {
 
 =head2 do_not
 
+    $ruleline->do_not({active=>'playera'},...,...);
+
 Return rows that othervise whould discarded, and not rows that normally would be kept.
 If no variables is included return true if false and false if true.
 
 =cut
 
-sub do_not {
-    my $self     = shift;
-    my $state_hr = shift;
-    my $input    = shift;
-    my $vars     = shift;
+sub do_not($self,$state_hr,$input,$vars) {
     confess 'Input should not be undef' if any { !defined $_ } ( $state_hr, $input, $vars );
     my $return   = { table => undef };
     my $state    = 'true';
@@ -203,11 +177,7 @@ Return an array of variable-tables
 
 =cut
 
-sub not_recresolve {
-    my $self =shift;
-    my $state_hr = shift;
-    my $inputs   = shift;
-    my $vars     = shift;
+sub not_recresolve( $self, $state_hr, $inputs, $vars) {
     confess 'Input should not be undef' if any { !defined $_ } ( $state_hr, $inputs, $vars );
 
     my $return;
@@ -278,7 +248,7 @@ sub _or_resolve {
             push( @$return, $self->_or_resolve( $state_hr, $func, $vars ) );
         } elsif ( $func eq 'distinct' ) {
             shift @$inputs;
-            $return = $vars->distinct($inputs,'or'); # return a value list. Should be row numbers in future.
+            $return = $vars->distinct($inputs); # return a value list. Should be row numbers in future.
             last;
         } elsif ( $func eq 'true' ) {
             $return = true( $state_hr, $inputs, $vars );
@@ -522,14 +492,10 @@ sub _true_if_row_exists {
     return $return;
 }
 
-
-sub true_facts {
-    my $self      = shift;
-    my $state_hr  = shift;
-    my $rule      = shift;
-    my $values_ar = shift;
-    my $vars      = shift;
-    my $not       = shift;
+# =head2 true_facts
+# $vars = $self->_true_facts($state_hr, $self->rule, $criteria->[0], $vars)
+# Retrun variables;
+sub _true_facts( $self, $state_hr,  $rule,  $values_ar, $vars) {
     confess '$state_hr is undef or not an hash. :' . ( $state_hr // 'undef' )
         if !defined $state_hr || ref $state_hr ne 'HASH';
     # Shall return {table=>[] variable=>[],true_if_empty=>0}

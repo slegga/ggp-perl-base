@@ -6,14 +6,6 @@ use Data::Dumper;
 use Carp;
 use List::MoreUtils qw (all first_index);
 use Scalar::Util qw(looks_like_number);
-#use feature 'say';
-=head1
-
-make a new module of this code.
-Implement methods from this page:
-http://arrogant.stanford.edu/ggp/chapters/chapter_04.html
-
-=cut
 
 # Enable warnings within the Parse::RecDescent module.
 use Cwd 'abs_path';
@@ -43,6 +35,11 @@ GGP::Agents::MaxMax
  print DUmper $agent->info();
 
 =head1 DESCRIPTION
+
+make a new module of this code.
+Implement methods from this page:
+http://arrogant.stanford.edu/ggp/chapters/chapter_04.html
+
 
 Agent that count on every body want max score for them self. Not looking at others
 

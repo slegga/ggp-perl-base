@@ -27,6 +27,7 @@ use GGP::Tools::Utils qw( data_to_gdl logf hashify);
 GGP::Tools::RuleOtimizer - Rule optimizer
 
 =head1 SYNOPSIS
+
  use GGP::Tools::Parser qw(gdl_pretty parse_gdl_file);
  use GGP::Tools::RuleOptimizer qw (optimize_rules);
  my $world = parse_gdl_file('connectFour');

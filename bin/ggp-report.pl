@@ -37,18 +37,12 @@ use GGP::Tools::Match qw (run_match list_rules list_agents);
 use SH::ScriptX;
 use Mojo::Base 'SH::ScriptX';
 
-#my @ARGV_COPY = @ARGV;
-#my ( $opts, $usage ) = options_and_usage(
-#     $0,
-#     \@ARGV,
-#     "%c %o",
 option  'info!',       'Info of rules and agents';
 option  'rulefiles=s',  'Names of rule files comma separated';
-option  'agents|a=s',    'A list of agents comma separated (guidedf,guidedl)';
-option  'epocfrom=n',    'Show only result from after from epoc';
+option  'agents=s',    'A list of agents comma separated (guidedf,guidedl)';
+option  'epocfrom=i',    'Show only result from after from epoc';
 # );
 
-__PACKAGE__->new->with_options->main() if !caller;
 sub main {
     my $self = shift;
     if ($self->info) {
@@ -68,8 +62,8 @@ sub main {
 
         # calculate failed rules %
         for my $rule(list_rules) {
-            my $tot=0;
-            my $fail=0;
+            my $tot  = 0;
+            my $fail = 0;
             for my $m(@data){
                 if ($self->epocfrom &&  $self->epocfrom > $m->{epoc}) {
                     next;
@@ -88,9 +82,9 @@ sub main {
         print "\n\n";
         # calculate failed ag %
         for my $agent(list_agents) {
-            my $tot=0;
-            my $fail=0;
-            my $sum=0;
+            my $tot = 0;
+            my $fail = 0;
+            my $sum = 0;
             for my $m(@data){
                 if ($self->epocfrom &&  $self->epocfrom > $m->{epoc}) {
                     next;
@@ -113,6 +107,8 @@ sub main {
         # calc success
     }
 }
+__PACKAGE__->new->with_options->main();
+
 
 =head1 AUTHOR
 

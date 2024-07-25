@@ -47,7 +47,7 @@ option 'quiet!',       'Print only result' ;
 option 'verbose!',     'Print log info' ;
 option 'watch=s',      'Comma separated list of state keys to watch' ;
 option 'watchrule=s',    'Not implemented yet. Show expanded rule' ;
-option 'server',       'Print data to file' ;
+option 'server!',       'Print data to file' ;
 option 'iterations=i', 'Max states calculated' ;
 option 'timed=i',        'Count how many games in n minutes.', ;
 

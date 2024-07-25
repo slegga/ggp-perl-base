@@ -1,6 +1,6 @@
 package GGP::Tools::StateMachine;
 
-use Moo;
+use Mojo::Base -base, -strict, -signatures;
 use autodie;
 #use namespace::clean;
 use Data::Dumper;
@@ -324,7 +324,7 @@ sub query_nextstate {
             last;
         }
         my $rule = GGP::Tools::RuleLine->new(rule=>$ruletmp);
-        my @loop = $rule->get_result_fromarule( $world->{facts}->{role}, $state_hr, $moves, $rule );
+        my @loop = $rule->get_result_fromarule( $world->{facts}->{role}, $state_hr, $moves );
 
         for my $key (@loop) {
             if ( ref $key eq 'ARRAY' ) {

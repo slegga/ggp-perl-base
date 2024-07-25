@@ -7,6 +7,7 @@ use Carp;
 use Data::Dumper;
 use Storable qw(dclone);
 use GGP::Tools::Utils qw( hashify extract_variables data_to_gdl logf);
+use experimental 'signatures';
 
 =encoding utf8
 
@@ -46,8 +47,8 @@ linebool = arrayref of all lines 1 = keep 0 = remove line
 
 =cut
 
-sub new {
-    my ($class_name) = @_;
+
+sub new($class_name) {
     my $self = {};
     $self->{table}         = [];    #contain current variable data for line
     $self->{variable}      = {};    #contain name as key and which column number in table
@@ -62,8 +63,7 @@ Reset object for handling a new line
 
 =cut
 
-sub reset {
-    my $self = shift;
+sub reset($self) {
     $self->{table}         = [];
     $self->{variable}      = {};
     $self->{true_if_empty} = 1;
@@ -75,8 +75,7 @@ Return object table;
 
 =cut
 
-sub get {
-    my $self = shift;
+sub get($self) {
     my $true = $self->get_bool();
     return { table => $self->{table}, variable => $self->{variable}, true => $true };
 }
@@ -85,16 +84,16 @@ sub get {
 
 =cut
 
-sub table {
-  return shift->{table};
+sub table( $self ) {
+  return $self->{table};
 }
 
-=head2 table
+=head2 variable
 
 =cut
 
-sub variable {
-  return shift->{variable};
+sub variable( $self ) {
+  return $self->{variable};
 }
 
 
@@ -105,8 +104,7 @@ If false stop calculate criteria.
 
 =cut
 
-sub get_bool {
-    my $self   = shift;
+sub get_bool($self) {
     my $return = $self->{true_if_empty};
     if ( !$return && @{ $self->{table} } ) {
         $return = 1;
@@ -121,9 +119,7 @@ Main sub. Shall make a x-product of current table and input table
 
 =cut
 
-sub do_and {
-    my $self  = shift;
-    my $input = shift;
+sub do_and($self,$input) {
     confess "first row table is undef " if ( exists $self->{table}->[0] && !defined $self->{table}->[0] );
 
     if ( $input->{variable} eq 'true' ) {
@@ -179,10 +175,6 @@ sub do_and {
                 push( @uniqinputs, $cv );
             }
         }
-        # my @variablekeys = keys %{ $self->{variable} };
-        # my ($com,$inp) = $self->compare_variablenames(\@variablekeys, $input->{variable});
-        # my @commonvars=@$com;
-        # my @uniqinputs=@$inp;
         if ( !@commonvars ) {    #make crossed product
             my $i = @variablekeys;
             while ( my ( $key, $value ) = each( %{ $input->{variable} } ) ) {
@@ -246,28 +238,6 @@ sub do_and {
     confess "first row table is undef " if ( exists $self->{table}->[0] && !defined $self->{table}->[0] );
 }
 
-=head2 compare_variablenames
-
-Takes orinal variablenamearray and incomming variablenamearray.
-return a common listarrayref and new listarrayref
-Used by do_and and RuleLine::get_facts
-
-=cut
-
-# sub compare_variablenames {
-#   my ($self, $orginal, $incomming)=@_;
-#   my @commonvars = ();
-#   my @uniqinputs = ();
-#   my @cvkeys     = sort { $incomming->{$a} <=> $incomming->{$b} } keys %{ $incomming };
-#   for my $cv (@cvkeys) {
-#       if ( any { $_ eq $cv } @$orginal ) {
-#           push( @commonvars, $cv );
-#       } else {
-#           push( @uniqinputs, $cv );
-#       }
-#   }
-#   return (\@commonvars, \@uniqinputs);
-# }
 
 =head2 do_or
 
@@ -279,10 +249,7 @@ Do use only linebool to keep track of rows
 
 =cut
 
-sub do_or {
-    my $self      = shift;
-    my $tables_ar = shift;    #$inputs
-    my $effect    = shift;
+sub do_or($self, $tables_ar, $effect) {
     confess "first row table is undef " if ( exists $self->{table}->[0] && !defined $self->{table}->[0] );
 
     confess "Inputs is not an ARRAY " . Dumper $tables_ar if !ref $tables_ar eq 'ARRAY';
@@ -384,9 +351,7 @@ return a linebool type of object
 
 =cut
 
-sub distinct {
-    my $self   = shift;
-    my $inputs = shift;
+sub distinct($self, $inputs) {
     my $return;
     $return->{table}    = [];
     $return->{variable} = 'linebool';
