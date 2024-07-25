@@ -7,7 +7,7 @@ use Data::Dumper;
 use Carp;
 use Data::Compare;
 use List::MoreUtils qw(any uniq first_index none);
-use GGP::Tools::Utils qw( hashify extract_variables data_to_gdl logf);
+use GGP::Tools::Utils qw( hashify data_to_gdl logf);
 use Storable qw(dclone);
 use Hash::Merge qw( merge );
 use Cwd 'abs_path';

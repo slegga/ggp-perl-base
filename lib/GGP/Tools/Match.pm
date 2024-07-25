@@ -47,7 +47,7 @@ use GGP::Tools::StateMachine (); #qw ( process_move);
 use GGP::Tools::Parser qw(parse_gdl);
 use GGP::Agents::Random; #qw (info start play stop abort);
 use GGP::Agents::Guided;#  qw (info start play stop abort);
-use GGP::Tools::Utils  qw( hashify extract_variables data_to_gdl logf);
+use GGP::Tools::Utils  qw( hashify data_to_gdl logf);
 our @EXPORT_OK = qw(run_match list_rules list_agents get_number_of_participants);
 
 =head2 list_rules

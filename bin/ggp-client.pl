@@ -12,7 +12,7 @@ use lib "$FindBin::Bin/../lib";
 
 use GGP::Tools::StateMachine;
 use GGP::Tools::Parser qw(parse_gdl gdl_to_data readkifraw  );
-use GGP::Tools::Utils qw (logf store_result logdest logfile data_to_gdl split_gdl hashify);
+use GGP::Tools::Utils qw (logf logdest logfile data_to_gdl split_gdl hashify);
 
 #use GGP::Agents::Random qw (info start play stop abort);
 #use GGP::Agents::CompulsiveDeliberation qw (info start play stop abort);

@@ -19,8 +19,8 @@ GGP::Tools::Variables - Compute variables
 
  use GGP::Tools::Variables;
  use Data::Dumper;
- $var = GGP::Tools::Variables->new();
- $var->reset();
+ $vars = GGP::Tools::Variables->new();
+ $vars->do_and( $self->true( $state_hr, $criteria->[0], $vars ) );
  print Dumper $var;
 
 =head1 DESCRIPTION
@@ -57,19 +57,20 @@ sub new($class_name) {
     bless( $self, $class_name );
 }
 
-=head2 reset
-
-Reset object for handling a new line
-
-=cut
-
-sub reset($self) {
-    $self->{table}         = [];
-    $self->{variable}      = {};
-    $self->{true_if_empty} = 1;
-}
+# =head2 reset
+#
+# Reset object for handling a new line
+#
+# =cut
+#
+# sub reset($self) {
+#     $self->{table}         = [];
+#     $self->{variable}      = {};
+#     $self->{true_if_empty} = 1;
+# }
 
 =head2 get
+    my $facts = $vars->get();
 
 Return object table;
 
@@ -113,6 +114,8 @@ sub get_bool($self) {
 }
 
 =head2 do_and
+
+    $vars->do_and( $self->true( $state_hr, $criteria->[0], $vars ) );
 
 Should be named and but that word is used.
 Main sub. Shall make a x-product of current table and input table

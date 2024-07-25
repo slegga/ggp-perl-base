@@ -13,7 +13,7 @@ use lib "$homedir/lib";
 use GGP::Tools::StateMachine (); #qw ( process_move);
 use GGP::Tools::Parser qw(parse_gdl);
 use GGP::Agents::Random; #qw (info start play stop abort);
-use GGP::Tools::Utils  qw( hashify extract_variables data_to_gdl logf);
+use GGP::Tools::Utils  qw( hashify data_to_gdl logf);
 sub test_short_match {
     my $world = shift;
     my $statem = GGP::Tools::StateMachine->new();

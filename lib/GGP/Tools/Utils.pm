@@ -7,11 +7,11 @@ use warnings;
 use Data::Dumper;
 use Data::Compare;    #0= differ 1=equal
 use Exporter 'import';
-our @EXPORT_OK = qw( hashify extract_variables data_to_gdl store_result logf logdest logfile split_gdl cartesian);
+our @EXPORT_OK = qw( hashify extract_variables data_to_gdl logf logdest logfile split_gdl cartesian);
 use List::MoreUtils qw(any uniq first_index none);
 use feature 'say';
 my $homedir;
-
+use experimental 'signatures';
 
 BEGIN {
     if ( $^O eq 'MSWin32' ) {
@@ -56,8 +56,7 @@ Set log destination
 =cut
 
 
-    sub logdest {
-        my $dest = shift;
+    sub logdest($dest = undef) {
         if ( !defined $logdest ) {
             $logdest = $dest // 'screen';
         }
@@ -71,10 +70,9 @@ Or read log file name if no parameters
 
 =cut
 
-    sub logfile {
-        my $dest = shift;
-        if ( defined $dest ) {
-            $logfile = $dest;
+    sub logfile($filepath = undef) {
+        if ( defined $filepath ) {
+            $logfile = $filepath;
         }
         if ( !defined $logfile ) {
             confess "logfile not defiend";
@@ -87,8 +85,7 @@ Or read log file name if no parameters
 
 =cut
 
-sub logf {
-    my $msg = shift;
+sub logf($msg) {
     if ( logdest() eq 'screen' ) {
         say $msg;
     } elsif ( logdest() eq 'file' && defined logfile() ) {
@@ -103,33 +100,33 @@ sub logf {
     }
 }
 
-=head2 store_result
-
-Log result
-
-=cut
-
-sub store_result {
-    my %result = @_;
-    open( my $fh, '>>', $homedir . '/log/ggp-results.txt' );
-    local $Data::Dumper::Indent   = 0;
-    local $Data::Dumper::Maxdepth = $Data::Dumper::Maxdepth || 2;
-    local $Data::Dumper::Sortkeys = 1;
-    local $Data::Dumper::Terse    = 1;
-
-    print $fh Dumper( \%result ) . ",\n";
-    logf( data_to_gdl( \%result ) );
-    close $fh;
-}
+# =head2 store_result
+#
+# Log result
+#
+# =cut
+#
+# sub store_result(%result) {
+#     open( my $fh, '>>', $homedir . '/log/ggp-results.txt' );
+#     local $Data::Dumper::Indent   = 0;
+#     local $Data::Dumper::Maxdepth = $Data::Dumper::Maxdepth || 2;
+#     local $Data::Dumper::Sortkeys = 1;
+#     local $Data::Dumper::Terse    = 1;
+#
+#     print $fh Dumper( \%result ) . ",\n";
+#     logf( data_to_gdl( \%result ) );
+#     close $fh;
+# }
 
 =head2 extract_variables
+
+    my @extrvar = extract_variables($effect);
 
 Get data return list of variables (?x ..)
 
 =cut
 
-sub extract_variables {
-    my $data = shift;
+sub extract_variables($data) {
     my @return;
     for my $eval ( flat @$data ) {
         if ( substr( $eval, 0, 1 ) eq '?' ) {
@@ -145,8 +142,7 @@ Takes an array read first value and use this value as key in returning hash.
 
 =cut
 
-sub hashify {
-    my @in_array = @_;
+sub hashify(@in_array) {
     confess "\@in_array is undefined" if !@in_array;
     my $return;
     my %rowcount;
@@ -195,8 +191,7 @@ Takes a datastructure and return a string packet as gdl/kif with out line break.
 
 =cut
 
-sub data_to_gdl {
-    my $data   = shift;
+sub data_to_gdl($data) {
     return '' if !defined $data;
     my $return = _recstringify($data);
     if ( substr( $return, 0, 1 ) ne '(' && ref $data ) {
@@ -249,9 +244,8 @@ return an array ref of splitted elements
 
 =cut
 
-sub split_gdl {
-    my $textline   = shift;
-    my $rlevel     = shift // 1;    # level to keep paranthesis|dynamic check front and back
+sub split_gdl($textline, $rlevel = 1) {
+#    my $rlevel     = shift // 1;    # level to keep paranthesis|dynamic check front and back
     my $return     = [];
     my $result     = [];
     my $tmppath    = $result;
