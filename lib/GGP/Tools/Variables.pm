@@ -6,7 +6,7 @@ use List::MoreUtils qw(any none);
 use Carp;
 use Data::Dumper;
 use Storable qw(dclone);
-use GGP::Tools::Utils qw( hashify extract_variables data_to_gdl logf);
+use GGP::Tools::Utils qw( hashify extract_variables logf);
 use experimental 'signatures';
 
 =encoding utf8

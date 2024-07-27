@@ -5,7 +5,7 @@ use Data::Compare;
 use Carp;
 use List::MoreUtils qw(any uniq first_index none sort_by);
 use GGP::Tools::Variables;
-use GGP::Tools::Utils qw( hashify extract_variables data_to_gdl logf);
+use GGP::Tools::Utils qw( extract_variables data_to_gdl logf);
 use Storable qw(dclone);
 use Hash::Merge qw( merge );
 use Mojo::Base -base,-strict,-signatures;

@@ -18,7 +18,7 @@ BEGIN {
 }
 use lib "$homedir/lib";
 
-use GGP::Tools::Utils qw( data_to_gdl logf hashify);
+use GGP::Tools::Utils qw( data_to_gdl logf );
 
 =encoding utf8
 

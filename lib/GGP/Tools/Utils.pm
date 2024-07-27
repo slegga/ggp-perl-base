@@ -7,7 +7,7 @@ use warnings;
 use Data::Dumper;
 use Data::Compare;    #0= differ 1=equal
 use Exporter 'import';
-our @EXPORT_OK = qw( hashify extract_variables data_to_gdl logf logdest logfile split_gdl cartesian);
+our @EXPORT_OK = qw( hashify extract_variables data_to_gdl logf logdest logfile split_gdl );
 use List::MoreUtils qw(any uniq first_index none);
 use feature 'say';
 my $homedir;
@@ -137,6 +137,8 @@ sub extract_variables($data) {
 }
 
 =head2 hashify
+
+    my $data = hashify(['key','value'});
 
 Takes an array read first value and use this value as key in returning hash.
 
@@ -303,28 +305,28 @@ sub split_gdl($textline, $rlevel = 1) {
     return $return;
 }
 
-=head2 cartesian
-
-Takes an array of arrays
-
-return an array of arrays of Cartesian products.
-
-=cut
-
-sub cartesian {
-    my @C = map { [$_] } @{ shift @_ };
-
-    foreach (@_) {
-        my @A = @$_;
-
-        @C = map {
-            my $n = $_;
-            map { [ $n, @$_ ] } @C
-        } @A;
-    }
-
-    return @C;
-}
+# =head2 cartesian
+#
+# Takes an array of arrays
+#
+# return an array of arrays of Cartesian products.
+#
+# =cut
+#
+# sub cartesian {
+#     my @C = map { [$_] } @{ shift @_ };
+#
+#     foreach (@_) {
+#         my @A = @$_;
+#
+#         @C = map {
+#             my $n = $_;
+#             map { [ $n, @$_ ] } @C
+#         } @A;
+#     }
+#
+#     return @C;
+# }
 
 1;
 
