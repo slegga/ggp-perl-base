@@ -50,11 +50,8 @@ Read file and process.
 
 =cut
 
-sub parse_gdl_file {
-    my $gdlfilepath = shift;
-    my $opts        = shift;
+sub parse_gdl_file($gdlfilepath, $opts = {}) {
     my $text        = read_file("$homedir/share/kif/$gdlfilepath.kif");
-
     return parse_gdl( $text, $opts );
 }
 
@@ -74,9 +71,7 @@ Takes a text string and transform to rules  in array of array ref.
 
 =cut
 
-sub parse_gdl {
-    my $text     = shift;
-    my $opts     = shift;
+sub parse_gdl($text, $opts = {}) {
     my @gdllines = ();
     my @datakif  = ();
     my $rules;
@@ -105,8 +100,7 @@ Takes gdl return an array of lines with one statement/command on each item
 
 =cut
 
-sub gdl_concat_lines {
-    my $text = shift;
+sub gdl_concat_lines($text) {
     my @return;
     my $par_balance = 0;
     my $longline    = '';
@@ -157,10 +151,9 @@ Return an hash ref.
 
 =cut
 
-sub gdl_order_and_group_lines {
+sub gdl_order_and_group_lines(@lines) {
 
     #reorder the lines so first come first
-    my @lines = @_;
     my @lastlines;        # do this later
     my @mostlastlines;    # belongs to a later group
     my $return = { facts => [], init => [], next => [], body => [], terminal=>[], legal=>[]
@@ -352,8 +345,7 @@ sub gdl_order_and_group_lines {
 
 }
 
-sub _get_knowns {
-    my $known = shift;
+sub _get_knowns($known) {
     return grep { $known->{$_} == 0 } grep { exists $known->{$_} } keys %$known;
 }
 
@@ -361,9 +353,7 @@ sub _get_knowns {
 #
 # Return ( $return = known functions/words, $ok = ready to put into list, $known = hashref of remaining occurence of functions, $missing_words = list of functions/words that has to be defined before ok);
 
-sub _getwords {
-    my $line          = shift;
-    my $known         = shift;
+sub _getwords( $line, $known ) {
     my $missing_words = [];
     my $ok            = 1;
     my $offset        = 1;
@@ -404,9 +394,6 @@ sub _getwords {
             return $known, 1;
         }
 
-        #     if ( $line =~ /\(\<\=\s*\(\b\w+\b\s*(?:\??\w+\b)\s*\(?\w+/ ) {
-        #         $offset = 2;
-        #     }
         for my $word ( @new[ $offset .. $#new ] ) {
             if ( none { $_ eq $word } _get_knowns($known) ) {
                 $ok = 0;
