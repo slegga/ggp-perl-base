@@ -11,7 +11,7 @@ BEGIN {
 }
 use lib "$homedir/lib";
 use GGP::Tools::StateMachine (); #qw ( process_move);
-use GGP::Tools::Parser qw(parse_gdl);
+use GGP::Tools::Parser;
 use GGP::Agents::Random; #qw (info start play stop abort);
 use GGP::Tools::Utils  qw( hashify logf);
 sub test_short_match {

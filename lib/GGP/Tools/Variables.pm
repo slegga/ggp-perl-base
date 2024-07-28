@@ -17,11 +17,11 @@ GGP::Tools::Variables - Compute variables
 
 =head1 SYNOPSIS
 
- use GGP::Tools::Variables;
- use Data::Dumper;
- $vars = GGP::Tools::Variables->new();
- $vars->do_and( $self->true( $state_hr, $criteria->[0], $vars ) );
- print Dumper $var;
+    use GGP::Tools::Variables;
+    use Data::Dumper;
+    $vars = GGP::Tools::Variables->new();
+    $vars->do_and( $self->true( $state_hr, $criteria->[0], $vars ) );
+    print Dumper $var;
 
 =head1 DESCRIPTION
 

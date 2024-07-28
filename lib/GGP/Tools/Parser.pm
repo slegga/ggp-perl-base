@@ -20,6 +20,7 @@ BEGIN {
 use lib "$homedir/lib";
 
 use GGP::Tools::Utils qw( data_to_gdl logf hashify);
+use feature 'signatures';
 
 =encoding utf8
 
@@ -256,11 +257,11 @@ sub gdl_order_and_group_lines {
 
     @$known{ keys %$tmpknown } = values %$tmpknown;
 
-    my @resultpart  = ();
-    my @nextlines   = ();
+    my @resultpart    = ();
+    my @nextlines     = ();
     my @lastnextlines =();
-    my @dependentcies=();
-    my $loopcounter = 0;
+    my @dependentcies =();
+    my $loopcounter   = 0;
 
     for my $line (@lines) {
         if ( $line =~ /\bnext\b(.+)/ ) {
@@ -268,7 +269,7 @@ sub gdl_order_and_group_lines {
             push( @lastnextlines, $line );
         } elsif ( $line =~ /\b(?:does)\b/ ) {
           my $tmpmissing;
-          my ($firstword)= ($line=~/([\w\+]+)/);
+          my ($firstword)= ($line =~ /([\w\+]+)/);
           confess("Illegal next: ".$line) if ($firstword eq 'next');
           # ( $known, $ok, $tmpmissing ) = _getwords( $line, $known );
           unshift( @nextlines, $line );
@@ -303,8 +304,8 @@ sub gdl_order_and_group_lines {
             }
         }
       }
-      @dependentcies=@newdepentancies;
-      @newdepentancies=();
+      @dependentcies = @newdepentancies;
+      @newdepentancies = ();
     }
     push(@mostlastlines, @lastlines);
     push(@nextlines, @lastnextlines);
@@ -538,7 +539,7 @@ sub gdl_to_data {
     }
     my $num = @$result;
     if ( $num > 1 ) {
-        confess "Many result from line '$textline'";
+        confess "Many ($num) result from line '$textline'";
     } elsif ( $num == 1 ) {
         return $result->[0];
     } else {

@@ -370,9 +370,7 @@ sub get_result_fromrules {
     confess '$state_hr is undef' if !defined $state_hr;
 
     my @return = ();
-    my $vars   = GGP::Tools::Variables->new();
 
-    #return @tmpreturn;
     for my $tmprule (@tmprules) {
         my $rule = GGP::Tools::RuleLine->new(rule=>$tmprule);
         push( @return,$rule->get_result_fromarule($roles, $state_hr, $moves));

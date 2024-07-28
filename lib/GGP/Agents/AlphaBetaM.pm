@@ -44,7 +44,6 @@ BEGIN {
 }
 use lib "$homedir/lib";
 use GGP::Tools::AgentBase;
-use GGP::Tools::Parser qw(parse_gdl);
 use GGP::Tools::Utils qw( data_to_gdl );
 use parent 'GGP::Tools::AgentBase';
 

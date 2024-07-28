@@ -112,7 +112,7 @@ sub get_result_fromarule($self, $roles, $state_hr, $moves) {
             if ( @$criteria > 1 ) {
                 confess( 'true is not implemented with more than one parameter' . Dumper $criteria);
             }
-            $vars->do_and( $self->true( $state_hr, $criteria->[0], $vars ) );
+            $vars->do_and( $self->true( $state_hr, $criteria->[0], $vars, 0 ) );
         } elsif ( $func eq ':facts') {
             # Breakes a pathern thar $vars modifies $vars.
             $vars = $self->_true_facts($state_hr, $self->rule, $criteria->[0], $vars);
@@ -304,12 +304,7 @@ Handles the true command. Will query rows from state table
 
 =cut
 
-sub true {
-    my $self      = shift;
-    my $state_hr  = shift;
-    my $values_ar = shift;
-    my $vars      = shift;
-    my $not       = shift;
+sub true( $self,$state_hr, $values_ar, $vars, $not ) {
     confess '$state_hr is undef or not an hash. :' . ( $state_hr // 'undef' )
         if !defined $state_hr || ref $state_hr ne 'HASH';
     my $statekey;
