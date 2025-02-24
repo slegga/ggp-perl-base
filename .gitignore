@@ -4,3 +4,4 @@ filelist.txt
 log/*
 *.ptkdb
 .prove
+.test-script-*
